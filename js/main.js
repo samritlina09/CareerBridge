@@ -10,14 +10,18 @@ function getApiBaseUrl() {
     if (staticPorts.includes(window.location.port) || window.location.protocol === 'file:') {
         return 'http://localhost:8000/backend/';
     }
-    const path = window.location.pathname;
-    const match = path.match(/^(\/[^\/]+)?\/(student|recruiter|admin|css|js|database|assets)/);
-    if (match && match[1]) {
-        return match[1] + '/backend/';
-    }
-    // Check if hosted under a subdirectory or root
-    const segments = path.split('/').filter(Boolean);
-    if (segments.length > 0 && !['student', 'recruiter', 'admin', 'index.html', 'login.html', 'register.html', 'about.html', 'opportunities.html', 'companies.html', 'how-it-works.html', 'contact.html', 'forgot-password.html'].includes(segments[0])) {
+
+    // Check path segments to detect whether CareerBridge is running at root or in a subfolder
+    const segments = window.location.pathname.split('/').filter(Boolean);
+    const rootNames = [
+        'student', 'recruiter', 'admin', 'backend', 'assets', 'css', 'js', 'database', 'ai',
+        'index.html', 'login.html', 'register.html', 'about.html', 'opportunities.html',
+        'companies.html', 'how-it-works.html', 'contact.html', 'forgot-password.html',
+        'student.php', 'recruiter.php', 'admin.php'
+    ];
+
+    // If there's a prefix segment before the application folders, that's the subfolder (e.g. /CareerBridge/)
+    if (segments.length > 0 && !rootNames.includes(segments[0].toLowerCase())) {
         return '/' + segments[0] + '/backend/';
     }
     return '/backend/';

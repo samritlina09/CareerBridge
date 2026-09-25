@@ -29,6 +29,7 @@ $sql = "SELECT j.job_id, j.title, j.job_type, j.work_mode, j.location, j.min_cgp
         JOIN companies c ON j.company_id = c.company_id
         LEFT JOIN recruiters r ON j.posted_by_recruiter_id = r.recruiter_id
         LEFT JOIN job_skills js ON j.job_id = js.job_id
+        LEFT JOIN skills s ON js.skill_id = s.skill_id
         WHERE (j.status = 'APPROVED' OR j.status = 'LIVE') AND j.deadline >= CURDATE()
         GROUP BY j.job_id, c.company_name, c.logo_path, c.industry
         ORDER BY match_score DESC, j.salary_stipend DESC";
