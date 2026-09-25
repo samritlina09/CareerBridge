@@ -471,22 +471,6 @@ The system uses a normalized relational database schema with referential integri
 
 ---
 
-## Screenshots
-
-### Database Entity-Relationship (ER) Diagram
-The normalized relational database architecture can be inspected in the project documentation:
-
-![CareerBridge Relational ER Diagram](documentation/ER-Diagram.png)
-
-### Application Interface
-*UI portal screenshots can be added here:*
-
-- **Student Portal**: Dashboard, Job Marketplace, Application Tracker
-- **Recruiter Portal**: Recruiter Command Center, Post a Job, Applicant Review
-- **Admin Portal**: Institutional Analytics Dashboard, Job Approvals, Placement Records
-
----
-
 ## Security
 
 CareerBridge implements standard web security practices across all layers:
