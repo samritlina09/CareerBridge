@@ -68,7 +68,7 @@ if ($method === 'GET') {
         $jStmt->execute(['jid' => $jobId]);
         $job = $jStmt->fetch();
 
-        if (!$job || $job['status'] !== 'LIVE') {
+        if (!$job || !in_array($job['status'], ['APPROVED', 'LIVE'], true)) {
             sendError('This job is no longer accepting applications.', 400);
         }
 

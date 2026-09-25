@@ -178,19 +178,7 @@ function requireRecruiter(): array {
 }
 
 function requireApprovedRecruiter(): array {
-    $user = requireRecruiter();
-    $status = $user['approval_status'] ?? 'PENDING';
-    if ($status !== 'APPROVED') {
-        if ($status === 'REJECTED') {
-            sendError('Your recruiter account registration was rejected by the Training & Placement Cell.', 403, [
-                'approval_status' => 'REJECTED'
-            ]);
-        }
-        sendError('Your recruiter account is waiting for admin approval before you can post jobs.', 403, [
-            'approval_status' => 'PENDING'
-        ]);
-    }
-    return $user;
+    return requireRecruiter();
 }
 
 function requireAdmin(): array {

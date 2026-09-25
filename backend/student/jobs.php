@@ -31,8 +31,7 @@ if (isset($_GET['id'])) {
                            JOIN companies c ON j.company_id = c.company_id
                            LEFT JOIN recruiters r ON j.posted_by_recruiter_id = r.recruiter_id
                            LEFT JOIN applications a ON j.job_id = a.job_id AND a.student_id = :sid
-                           WHERE j.job_id = :jid AND j.status = 'LIVE'
-                             AND c.is_verified = 1 AND (j.posted_by_recruiter_id IS NULL OR r.approval_status = 'APPROVED')");
+                           WHERE j.job_id = :jid AND (j.status = 'APPROVED' OR j.status = 'LIVE')");
     $stmt->execute(['jid' => $jobId, 'sid' => $studentId]);
     $job = $stmt->fetch();
 
@@ -108,8 +107,7 @@ $sql = "SELECT j.job_id, j.title, j.job_type, j.work_mode, j.location, j.min_cgp
         LEFT JOIN job_skills js ON j.job_id = js.job_id
         LEFT JOIN skills s ON js.skill_id = s.skill_id
         LEFT JOIN applications a ON j.job_id = a.job_id AND a.student_id = :sid_app
-        WHERE j.status = 'LIVE' AND j.deadline >= CURDATE()
-          AND c.is_verified = 1 AND (j.posted_by_recruiter_id IS NULL OR r.approval_status = 'APPROVED')";
+        WHERE (j.status = 'APPROVED' OR j.status = 'LIVE') AND j.deadline >= CURDATE()";
 
 $params = [
     'sid_match' => $studentId,

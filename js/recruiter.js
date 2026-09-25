@@ -45,131 +45,38 @@ async function initRecruiterView() {
     return true;
 }
 
-// Render Recruiter Verification Status Alerts & Guard Controls
+// Format Job Status Pill for Recruiter Portal
+function formatJobStatusPill(status) {
+    const s = (status || '').toUpperCase();
+    if (s === 'PENDING') {
+        return '<span class="status-pill status-pending"><i class="fas fa-clock"></i> Pending Approval</span>';
+    } else if (s === 'APPROVED' || s === 'LIVE') {
+        return '<span class="status-pill status-selected"><i class="fas fa-check-circle"></i> Approved</span>';
+    } else if (s === 'REJECTED') {
+        return '<span class="status-pill status-rejected"><i class="fas fa-times-circle"></i> Rejected</span>';
+    } else if (s === 'CLOSED') {
+        return '<span class="status-pill status-closed"><i class="fas fa-ban"></i> Closed</span>';
+    }
+    return `<span class="status-pill status-neutral">${status}</span>`;
+}
+
+// Render Recruiter Status & Info Notices
 function renderRecruiterVerificationStatus(user) {
-    const status = (user.approval_status || 'APPROVED').toUpperCase();
-    const alertContainer = document.getElementById('recruiter-status-alert');
     const postJobAlert = document.getElementById('post-job-approval-alert');
-    const topbarPostBtn = document.getElementById('recruiter-topbar-post-btn');
-
-    if (status === 'PENDING') {
-        if (alertContainer) {
-            alertContainer.innerHTML = `
-                <div class="alert alert-warning" style="background: #fffbeb; border: 1px solid #fde68a; border-left: 4px solid #f59e0b; padding: 1.25rem 1.5rem; border-radius: var(--radius-md); margin-bottom: 1.5rem; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
-                    <div style="display: flex; align-items: flex-start; gap: 1rem;">
-                        <div style="font-size: 1.75rem; color: #d97706; line-height: 1;"><i class="fas fa-hourglass-half"></i></div>
-                        <div>
-                            <h4 style="margin: 0 0 0.25rem 0; color: #92400e; font-weight: 700; font-size: 1.05rem;">
-                                Your recruiter account is waiting for admin approval.
-                            </h4>
-                            <p style="margin: 0; color: #b45309; font-size: 0.925rem;">
-                                Your company profile is currently under review by the Training & Placement Cell. You can view and update your <a href="profile.html" style="font-weight: 600; text-decoration: underline;">Company Profile</a>, but job publishing features remain locked until verified.
-                            </p>
-                        </div>
-                    </div>
-                    <span class="badge" style="background: #fef3c7; color: #92400e; font-weight: 700; padding: 0.45rem 0.85rem; border: 1px solid #fde68a;">
-                        <i class="fas fa-clock"></i> PENDING APPROVAL
-                    </span>
+    if (postJobAlert) {
+        postJobAlert.innerHTML = `
+            <div class="alert alert-info" style="background: #eff6ff; border: 1px solid #bfdbfe; border-left: 4px solid var(--primary); padding: 1rem 1.25rem; border-radius: var(--radius-md); margin-bottom: 1.5rem; display: flex; align-items: center; gap: 0.75rem;">
+                <i class="fas fa-info-circle" style="color: var(--primary); font-size: 1.25rem;"></i>
+                <div>
+                    <h4 style="margin: 0 0 0.15rem 0; color: #1e3a8a; font-weight: 700; font-size: 0.95rem;">
+                        Job Review Process
+                    </h4>
+                    <p style="margin: 0; color: #1d4ed8; font-size: 0.875rem;">
+                        Submitted job opportunities are reviewed by the Training & Placement Cell. Once approved by an administrator, the listing will automatically become live for students to view and apply.
+                    </p>
                 </div>
-            `;
-        }
-
-        if (postJobAlert) {
-            postJobAlert.innerHTML = `
-                <div class="alert alert-warning" style="background: #fffbeb; border: 1px solid #fde68a; border-left: 4px solid #f59e0b; padding: 1.25rem 1.5rem; border-radius: var(--radius-md); margin-bottom: 1.5rem; display: flex; align-items: flex-start; gap: 1rem;">
-                    <div style="font-size: 1.75rem; color: #d97706; line-height: 1;"><i class="fas fa-lock"></i></div>
-                    <div>
-                        <h4 style="margin: 0 0 0.25rem 0; color: #92400e; font-weight: 700; font-size: 1.05rem;">
-                            Your recruiter account is waiting for admin approval.
-                        </h4>
-                        <p style="margin: 0; color: #b45309; font-size: 0.925rem;">
-                            You cannot post jobs until your recruiter profile and company have been reviewed and approved by the Training & Placement Cell.
-                        </p>
-                    </div>
-                </div>
-            `;
-            const postForm = document.getElementById('post-job-form');
-            if (postForm) {
-                const elements = postForm.querySelectorAll('input, select, textarea, button');
-                elements.forEach(el => el.disabled = true);
-                const submitBtn = document.getElementById('submit-job-btn');
-                if (submitBtn) {
-                    submitBtn.disabled = true;
-                    submitBtn.innerHTML = '<i class="fas fa-lock"></i> Waiting for Admin Approval';
-                }
-            }
-        }
-
-        if (topbarPostBtn) {
-            topbarPostBtn.classList.remove('btn-primary');
-            topbarPostBtn.classList.add('btn-outline');
-            topbarPostBtn.style.opacity = '0.65';
-            topbarPostBtn.style.cursor = 'not-allowed';
-            topbarPostBtn.innerHTML = '<i class="fas fa-lock"></i> Post Opportunity (Pending)';
-            topbarPostBtn.removeAttribute('href');
-            topbarPostBtn.onclick = (e) => {
-                e.preventDefault();
-                showToast('warning', 'Approval Required', 'Your recruiter account is waiting for admin approval before you can post jobs.');
-            };
-        }
-
-        const otherPostLinks = document.querySelectorAll('a[href="post-job.html"]');
-        otherPostLinks.forEach(link => {
-            if (link !== topbarPostBtn) {
-                link.style.opacity = '0.65';
-                link.innerHTML = '<i class="fas fa-lock"></i> Post New Job (Pending)';
-                link.onclick = (e) => {
-                    e.preventDefault();
-                    showToast('warning', 'Approval Required', 'Your recruiter account is waiting for admin approval before you can post jobs.');
-                };
-            }
-        });
-    } else if (status === 'REJECTED') {
-        if (alertContainer) {
-            alertContainer.innerHTML = `
-                <div class="alert alert-danger" style="background: #fef2f2; border: 1px solid #fecaca; border-left: 4px solid #ef4444; padding: 1.25rem 1.5rem; border-radius: var(--radius-md); margin-bottom: 1.5rem; display: flex; align-items: flex-start; gap: 1rem;">
-                    <div style="font-size: 1.75rem; color: #dc2626; line-height: 1;"><i class="fas fa-times-circle"></i></div>
-                    <div>
-                        <h4 style="margin: 0 0 0.25rem 0; color: #991b1b; font-weight: 700; font-size: 1.05rem;">
-                            Registration Not Approved
-                        </h4>
-                        <p style="margin: 0; color: #b91c1c; font-size: 0.925rem;">
-                            Your recruiter registration was not approved by the Training & Placement Cell. Please verify your company credentials or contact the T&P Cell for assistance.
-                        </p>
-                    </div>
-                </div>
-            `;
-        }
-
-        if (postJobAlert) {
-            postJobAlert.innerHTML = `
-                <div class="alert alert-danger" style="background: #fef2f2; border: 1px solid #fecaca; border-left: 4px solid #ef4444; padding: 1.25rem 1.5rem; border-radius: var(--radius-md); margin-bottom: 1.5rem; display: flex; align-items: flex-start; gap: 1rem;">
-                    <div style="font-size: 1.75rem; color: #dc2626; line-height: 1;"><i class="fas fa-ban"></i></div>
-                    <div>
-                        <h4 style="margin: 0 0 0.25rem 0; color: #991b1b; font-weight: 700; font-size: 1.05rem;">
-                            Account Not Authorized
-                        </h4>
-                        <p style="margin: 0; color: #b91c1c; font-size: 0.925rem;">
-                            This recruiter account was rejected by the Training & Placement Cell. You cannot create job listings.
-                        </p>
-                    </div>
-                </div>
-            `;
-            const postForm = document.getElementById('post-job-form');
-            if (postForm) {
-                const elements = postForm.querySelectorAll('input, select, textarea, button');
-                elements.forEach(el => el.disabled = true);
-            }
-        }
-
-        if (topbarPostBtn) {
-            topbarPostBtn.style.display = 'none';
-        }
-
-        const otherPostLinks = document.querySelectorAll('a[href="post-job.html"]');
-        otherPostLinks.forEach(link => {
-            link.style.display = 'none';
-        });
+            </div>
+        `;
     }
 }
 
@@ -229,7 +136,7 @@ async function loadRecruiterJobsPreview() {
                 <td><strong>${j.title}</strong></td>
                 <td><span class="badge badge-primary">${j.job_type}</span></td>
                 <td>${formatCurrency(j.salary_stipend)}</td>
-                <td><span class="status-pill status-${j.status.toLowerCase()}">${j.status}</span></td>
+                <td>${formatJobStatusPill(j.status)}</td>
                 <td>${j.total_applicants || 0} applicants</td>
             </tr>
         `).join('');
@@ -336,17 +243,23 @@ async function loadManageJobsTable() {
                 <td>${j.location} (${j.work_mode})</td>
                 <td>${formatCurrency(j.salary_stipend)}</td>
                 <td>${formatDate(j.deadline)}</td>
-                <td><span class="status-pill status-${j.status.toLowerCase()}">${j.status}</span></td>
+                <td>${formatJobStatusPill(j.status)}</td>
                 <td>
-                    <div style="display: flex; gap: 0.5rem;">
-                        <a href="applicants.html?job_id=${j.job_id}" class="btn btn-primary btn-sm" title="View Applicants">
-                            <i class="fas fa-users"></i> ${j.total_applicants || 0}
-                        </a>
-                        ${j.status === 'LIVE' ? `
+                    <div style="display: flex; gap: 0.5rem; align-items: center;">
+                        ${(j.status === 'APPROVED' || j.status === 'LIVE') ? `
+                            <a href="applicants.html?job_id=${j.job_id}" class="btn btn-primary btn-sm" title="View Applicants">
+                                <i class="fas fa-users"></i> ${j.total_applicants || 0}
+                            </a>
                             <button class="btn btn-outline btn-sm" onclick="closeJob(${j.job_id})" title="Close Listing" style="color: var(--danger);">
-                                <i class="fas fa-ban"></i>
+                                <i class="fas fa-ban"></i> Close
                             </button>
-                        ` : ''}
+                        ` : (j.status === 'PENDING') ? `
+                            <span style="font-size: 0.825rem; color: var(--text-muted);"><i class="fas fa-hourglass-half"></i> Under Admin Review</span>
+                        ` : (j.status === 'REJECTED') ? `
+                            <span style="font-size: 0.825rem; color: var(--danger);"><i class="fas fa-times-circle"></i> Rejected by Admin</span>
+                        ` : `
+                            <span style="font-size: 0.825rem; color: var(--text-muted);"><i class="fas fa-ban"></i> Closed</span>
+                        `}
                     </div>
                 </td>
             </tr>

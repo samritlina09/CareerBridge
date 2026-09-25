@@ -321,33 +321,194 @@ async function loadAllRecruitersTable(statusFilter = currentRecruiterFilter) {
     }
 }
 
-// All Jobs Full Table
-async function loadAllJobsTable() {
-    const tbody = document.getElementById('all-jobs-tbody');
-    if (!tbody) return;
+// Handle Job Approval Action (Approve, Reject, Close)
+async function handleJobApproval(jobId, action) {
+    const actionLabels = {
+        'approve': 'Approve this job posting and publish it to the Student Portal?',
+        'reject': 'Reject this job posting?',
+        'close': 'Close this job posting?'
+    };
+    if (action === 'reject' || action === 'close') {
+        if (!confirm(actionLabels[action])) return;
+    }
+
+    try {
+        const res = await apiRequest('admin/jobs.php', {
+            method: 'POST',
+            body: JSON.stringify({ job_id: jobId, action })
+        });
+        showToast('success', 'Job Updated', res.message);
+        if (typeof loadPendingJobsPreview === 'function') loadPendingJobsPreview();
+        if (typeof loadAllJobsTable === 'function') loadAllJobsTable(currentJobFilter);
+    } catch (err) {
+        showToast('error', 'Action Failed', err.message);
+    }
+}
+
+let currentJobFilter = '';
+
+function filterJobStatus(btn, status) {
+    currentJobFilter = status;
+    document.querySelectorAll('.filter-tab-job').forEach(b => {
+        b.classList.remove('btn-primary', 'active');
+        b.classList.add('btn-outline');
+    });
+    if (btn) {
+        btn.classList.remove('btn-outline');
+        btn.classList.add('btn-primary', 'active');
+    }
+    loadAllJobsTable(status);
+}
+
+// All Jobs Full Table & Pending Section
+async function loadAllJobsTable(statusFilter = currentJobFilter) {
+    const allTbody = document.getElementById('all-jobs-tbody');
+    const pendingTbody = document.getElementById('pending-jobs-tbody');
+    const pendingBadge = document.getElementById('pending-jobs-badge');
 
     try {
         const res = await apiRequest('admin/jobs.php');
-        tbody.innerHTML = res.jobs.map(j => `
-            <tr>
-                <td><strong>${j.title}</strong><br><small style="color: var(--text-muted);">${j.company_name}</small></td>
-                <td><span class="badge badge-primary">${j.job_type}</span></td>
-                <td>${j.location}</td>
-                <td>${formatCurrency(j.salary_stipend)}</td>
-                <td>Min ${j.min_cgpa}</td>
-                <td><span class="status-pill status-${j.status.toLowerCase()}">${j.status}</span></td>
-                <td>${j.applicant_count || 0}</td>
-                <td>
-                    ${j.status === 'PENDING' ? `
-                        <button class="btn btn-success btn-sm" onclick="handleJobApproval(${j.job_id}, 'approve')">Approve</button>
-                        <button class="btn btn-outline btn-sm" onclick="handleJobApproval(${j.job_id}, 'reject')" style="color: var(--danger);">Reject</button>
-                    ` : `
-                        <button class="btn btn-outline btn-sm" onclick="handleJobApproval(${j.job_id}, 'close')" style="color: var(--text-muted);">Close</button>
-                    `}
-                </td>
-            </tr>
-        `).join('');
+        const allList = res.jobs || [];
+        const counts = res.counts || { total: allList.length, pending: 0, approved: 0, rejected: 0, closed: 0 };
+
+        // Update count badges
+        const countAll = document.getElementById('job-count-all');
+        const countPending = document.getElementById('job-count-pending');
+        const countApproved = document.getElementById('job-count-approved');
+        const countRejected = document.getElementById('job-count-rejected');
+        if (countAll) countAll.textContent = counts.total;
+        if (countPending) countPending.textContent = counts.pending;
+        if (countApproved) countApproved.textContent = counts.approved;
+        if (countRejected) countRejected.textContent = counts.rejected;
+        if (pendingBadge) pendingBadge.textContent = `${counts.pending} Pending`;
+
+        // 1. Render Dedicated Pending Table
+        if (pendingTbody) {
+            const pendingList = allList.filter(j => j.status === 'PENDING');
+            if (pendingList.length === 0) {
+                pendingTbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="empty-state" style="padding: 2rem;">
+                            <i class="fas fa-check-circle" style="color: var(--success); font-size: 1.5rem; margin-bottom: 0.5rem;"></i>
+                            <p style="margin: 0;">No job postings currently awaiting approval.</p>
+                        </td>
+                    </tr>
+                `;
+            } else {
+                pendingTbody.innerHTML = pendingList.map(j => `
+                    <tr>
+                        <td>
+                            <strong>${j.title}</strong>
+                            <div style="font-size: 0.825rem; color: var(--text-secondary); margin-top: 0.25rem; max-width: 280px; white-space: normal; line-height: 1.35;">
+                                ${j.description ? j.description.substring(0, 110) + '...' : 'No description'}
+                            </div>
+                        </td>
+                        <td>
+                            <strong>${j.company_name}</strong>
+                            <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem;">
+                                <div><i class="fas fa-user-tie"></i> ${j.recruiter_name}</div>
+                                <div><i class="fas fa-envelope"></i> ${j.recruiter_email || 'N/A'}</div>
+                                ${j.recruiter_phone ? `<div><i class="fas fa-phone"></i> ${j.recruiter_phone}</div>` : ''}
+                            </div>
+                        </td>
+                        <td>
+                            <div><strong>Min CGPA:</strong> ${j.min_cgpa}</div>
+                            <div style="font-size: 0.775rem; color: var(--text-secondary); margin-top: 0.2rem; max-width: 180px;">
+                                ${j.eligible_branches || 'All Branches Eligible'}
+                            </div>
+                        </td>
+                        <td>
+                            <div style="display: flex; flex-wrap: wrap; gap: 0.25rem; max-width: 220px;">
+                                ${j.required_skills ? j.required_skills.split(', ').map(s => `<span class="badge badge-neutral" style="font-size: 0.725rem;">${s}</span>`).join('') : '<span style="color: var(--text-muted); font-size: 0.8rem;">None specified</span>'}
+                            </div>
+                        </td>
+                        <td>
+                            <strong style="color: var(--success);">${formatCurrency(j.salary_stipend)}</strong>
+                            <div style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.2rem;">
+                                ${j.location} (${j.work_mode}) &bull; ${j.job_type}
+                            </div>
+                        </td>
+                        <td>
+                            <span style="font-size: 0.85rem; font-weight: 600;">${formatDate(j.deadline)}</span>
+                        </td>
+                        <td>
+                            <div style="display: flex; gap: 0.35rem; flex-direction: column;">
+                                <button class="btn btn-success btn-sm" onclick="handleJobApproval(${j.job_id}, 'approve')" style="white-space: nowrap;">
+                                    <i class="fas fa-check"></i> Approve Job
+                                </button>
+                                <button class="btn btn-outline btn-sm" onclick="handleJobApproval(${j.job_id}, 'reject')" style="color: var(--danger); border-color: var(--danger); white-space: nowrap;">
+                                    <i class="fas fa-times"></i> Reject Job
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `).join('');
+            }
+        }
+
+        // 2. Render All Jobs Table (Filtered)
+        if (allTbody) {
+            let filteredList = allList;
+            if (statusFilter === 'APPROVED') {
+                filteredList = allList.filter(j => j.status === 'APPROVED' || j.status === 'LIVE');
+            } else if (statusFilter) {
+                filteredList = allList.filter(j => j.status === statusFilter);
+            }
+
+            if (filteredList.length === 0) {
+                allTbody.innerHTML = `<tr><td colspan="8" class="empty-state">No jobs found for selected filter.</td></tr>`;
+                return;
+            }
+
+            allTbody.innerHTML = filteredList.map(j => {
+                let statusBadge = '<span class="status-pill status-pending"><i class="fas fa-clock"></i> Pending Approval</span>';
+                if (j.status === 'APPROVED' || j.status === 'LIVE') {
+                    statusBadge = '<span class="status-pill status-selected"><i class="fas fa-check-circle"></i> Approved</span>';
+                } else if (j.status === 'REJECTED') {
+                    statusBadge = '<span class="status-pill status-rejected"><i class="fas fa-times-circle"></i> Rejected</span>';
+                } else if (j.status === 'CLOSED') {
+                    statusBadge = '<span class="status-pill status-closed"><i class="fas fa-ban"></i> Closed</span>';
+                }
+
+                let actionHtml = '';
+                if (j.status === 'PENDING') {
+                    actionHtml = `
+                        <div style="display: flex; gap: 0.35rem;">
+                            <button class="btn btn-success btn-sm" onclick="handleJobApproval(${j.job_id}, 'approve')">Approve</button>
+                            <button class="btn btn-outline btn-sm" onclick="handleJobApproval(${j.job_id}, 'reject')" style="color: var(--danger); border-color: var(--danger);">Reject</button>
+                        </div>
+                    `;
+                } else if (j.status === 'APPROVED' || j.status === 'LIVE') {
+                    actionHtml = `
+                        <button class="btn btn-outline btn-sm" onclick="handleJobApproval(${j.job_id}, 'close')" style="color: var(--text-muted);" title="Close Listing">
+                            <i class="fas fa-ban"></i> Close
+                        </button>
+                    `;
+                } else if (j.status === 'REJECTED') {
+                    actionHtml = `
+                        <button class="btn btn-outline btn-sm" onclick="handleJobApproval(${j.job_id}, 'approve')" style="color: var(--success); border-color: var(--success);" title="Re-Approve Job">
+                            <i class="fas fa-redo"></i> Re-Approve
+                        </button>
+                    `;
+                }
+
+                return `
+                    <tr>
+                        <td><strong>${j.title}</strong><br><small style="color: var(--text-muted);">${j.company_name}</small></td>
+                        <td><span class="badge badge-primary">${j.job_type}</span></td>
+                        <td>${j.location}</td>
+                        <td>${formatCurrency(j.salary_stipend)}</td>
+                        <td>Min ${j.min_cgpa}</td>
+                        <td>${statusBadge}</td>
+                        <td>${j.applicant_count || 0}</td>
+                        <td>${actionHtml}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
     } catch (err) {
+        if (allTbody) allTbody.innerHTML = `<tr><td colspan="8">Error loading jobs: ${err.message}</td></tr>`;
         showToast('error', 'Jobs Error', err.message);
     }
 }

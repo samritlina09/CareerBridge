@@ -170,7 +170,7 @@ $jobsStmt = $pdo->query("SELECT j.job_id, j.title, j.job_type, j.work_mode, j.lo
                                 c.company_name
                          FROM jobs j
                          JOIN companies c ON j.company_id = c.company_id
-                         WHERE j.status = 'LIVE'
+                         WHERE (j.status = 'APPROVED' OR j.status = 'LIVE')
                          ORDER BY j.salary_stipend DESC");
 $liveJobs = $jobsStmt->fetchAll();
 

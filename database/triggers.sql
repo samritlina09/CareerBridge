@@ -20,7 +20,7 @@ BEGIN
     SELECT status, deadline INTO v_job_status, v_deadline
     FROM jobs WHERE job_id = NEW.job_id;
 
-    IF v_job_status != 'LIVE' THEN
+    IF v_job_status NOT IN ('LIVE', 'APPROVED') THEN
         SIGNAL SQLSTATE '45000'
             SET MESSAGE_TEXT = 'Application Rejected: Job posting is not currently LIVE or approved by Admin.';
     END IF;

@@ -11,7 +11,7 @@ $pdo = getDatabaseConnection();
 // Global Stats (Admin / General)
 $totalStudents = (int)$pdo->query("SELECT COUNT(*) FROM students")->fetchColumn();
 $totalCompanies = (int)$pdo->query("SELECT COUNT(*) FROM companies")->fetchColumn();
-$activeJobs = (int)$pdo->query("SELECT COUNT(*) FROM jobs WHERE status = 'LIVE' AND deadline >= CURDATE()")->fetchColumn();
+$activeJobs = (int)$pdo->query("SELECT COUNT(*) FROM jobs WHERE status IN ('APPROVED', 'LIVE') AND deadline >= CURDATE()")->fetchColumn();
 $totalApplications = (int)$pdo->query("SELECT COUNT(*) FROM applications")->fetchColumn();
 $shortlistedStudents = (int)$pdo->query("SELECT COUNT(DISTINCT student_id) FROM applications WHERE status = 'SHORTLISTED'")->fetchColumn();
 $selectedStudents = (int)$pdo->query("SELECT COUNT(DISTINCT student_id) FROM applications WHERE status = 'SELECTED'")->fetchColumn();
@@ -46,7 +46,7 @@ if ($user && ($user['role'] ?? '') === 'STUDENT' && !empty($user['entity_id'])) 
     $cid = $user['company_id'];
     $rStats = $pdo->prepare("SELECT 
                                 COUNT(DISTINCT j.job_id) AS total_jobs,
-                                COUNT(DISTINCT CASE WHEN j.status = 'LIVE' THEN j.job_id END) AS active_jobs,
+                                COUNT(DISTINCT CASE WHEN j.status IN ('APPROVED', 'LIVE') THEN j.job_id END) AS active_jobs,
                                 COUNT(DISTINCT a.application_id) AS total_applicants,
                                 COUNT(DISTINCT CASE WHEN a.status = 'SHORTLISTED' THEN a.application_id END) AS shortlisted,
                                 COUNT(DISTINCT CASE WHEN a.status = 'INTERVIEW_SCHEDULED' THEN a.application_id END) AS interviews,

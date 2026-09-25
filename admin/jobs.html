@@ -76,9 +76,60 @@
             </header>
 
             <div class="content-body">
-                <div class="card">
+                <!-- Dedicated Job Approvals (Pending Review) Section -->
+                <div class="card" style="margin-bottom: 2rem; border-top: 3px solid var(--warning);">
                     <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
-                        <h3><i class="fas fa-briefcase" style="color: var(--primary); margin-right: 0.5rem;"></i> All Placement Drives</h3>
+                        <div>
+                            <h3 style="margin-bottom: 0.25rem;">
+                                <i class="fas fa-clipboard-check" style="color: var(--warning); margin-right: 0.5rem;"></i>
+                                Job Approvals (Pending Review)
+                            </h3>
+                            <p style="margin: 0; font-size: 0.85rem; color: var(--text-muted);">
+                                Review employer job postings. Approved jobs immediately become visible in the Student Portal.
+                            </p>
+                        </div>
+                        <span id="pending-jobs-badge" class="badge badge-warning" style="font-size: 0.85rem;">0 Pending</span>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Job Title & Description</th>
+                                    <th>Company & Recruiter</th>
+                                    <th>Eligibility (CGPA & Branches)</th>
+                                    <th>Required Skills</th>
+                                    <th>Compensation & Location</th>
+                                    <th>Deadline</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pending-jobs-tbody">
+                                <tr><td colspan="7" class="empty-state">Loading pending job postings...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- All Job Postings Section with Filter Tabs -->
+                <div class="card">
+                    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                        <div>
+                            <h3 style="margin: 0;"><i class="fas fa-briefcase" style="color: var(--primary); margin-right: 0.5rem;"></i> All Placement Drives</h3>
+                        </div>
+                        <div class="filter-tabs" style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                            <button class="btn btn-sm btn-primary filter-tab-job active" data-filter="" onclick="filterJobStatus(this, '')">
+                                All <span id="job-count-all" class="badge badge-neutral" style="margin-left: 0.25rem;">0</span>
+                            </button>
+                            <button class="btn btn-sm btn-outline filter-tab-job" data-filter="PENDING" onclick="filterJobStatus(this, 'PENDING')">
+                                Pending <span id="job-count-pending" class="badge badge-warning" style="margin-left: 0.25rem;">0</span>
+                            </button>
+                            <button class="btn btn-sm btn-outline filter-tab-job" data-filter="APPROVED" onclick="filterJobStatus(this, 'APPROVED')">
+                                Approved <span id="job-count-approved" class="badge badge-success" style="margin-left: 0.25rem;">0</span>
+                            </button>
+                            <button class="btn btn-sm btn-outline filter-tab-job" data-filter="REJECTED" onclick="filterJobStatus(this, 'REJECTED')">
+                                Rejected <span id="job-count-rejected" class="badge badge-danger" style="margin-left: 0.25rem;">0</span>
+                            </button>
+                        </div>
                     </div>
                     <div class="table-responsive">
                         <table class="data-table">

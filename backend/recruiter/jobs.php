@@ -77,9 +77,9 @@ if ($method === 'GET') {
     $action = $input['action'] ?? 'create';
 
     if ($action === 'create') {
-        $approvedUser = requireApprovedRecruiter();
-        $recruiterId = $approvedUser['entity_id'];
-        $companyId = $approvedUser['company_id'] ?? $companyId;
+        $user = requireRecruiter();
+        $recruiterId = $user['entity_id'];
+        $companyId = $user['company_id'] ?? $companyId;
 
         $title = trim($input['title'] ?? '');
         $description = trim($input['description'] ?? '');
@@ -101,9 +101,9 @@ if ($method === 'GET') {
         try {
             $pdo->beginTransaction();
 
-            // Insert Job with LIVE status so it is immediately visible to students
+            // Insert Job with PENDING status awaiting admin review
             $stmt = $pdo->prepare("INSERT INTO jobs (company_id, posted_by_recruiter_id, title, description, job_type, work_mode, location, min_cgpa, salary_stipend, experience_req, deadline, openings_count, status)
-                                   VALUES (:cid, :rid, :title, :desc, :type, :mode, :loc, :cgpa, :salary, :exp, :dead, :open, 'LIVE')");
+                                   VALUES (:cid, :rid, :title, :desc, :type, :mode, :loc, :cgpa, :salary, :exp, :dead, :open, 'PENDING')");
             $stmt->execute([
                 'cid'    => $companyId,
                 'rid'    => $recruiterId,
@@ -139,18 +139,18 @@ if ($method === 'GET') {
             // Notify Admin
             $admin = $pdo->query("SELECT user_id FROM users WHERE role = 'ADMIN' LIMIT 1")->fetch();
             if ($admin) {
-                $nStmt = $pdo->prepare("INSERT INTO notifications (user_id, title, message, link_url) VALUES (:uid, 'New Job Published', :msg, 'jobs.html')");
+                $nStmt = $pdo->prepare("INSERT INTO notifications (user_id, title, message, link_url) VALUES (:uid, 'New Job Awaiting Approval', :msg, 'jobs.html')");
                 $nStmt->execute([
                     'uid' => $admin['user_id'],
-                    'msg' => "New job '{$title}' published by company."
+                    'msg' => "New job opportunity '{$title}' posted and awaiting admin approval."
                 ]);
             }
 
             $pdo->commit();
 
-            sendSuccess('Job opportunity published successfully! It is now LIVE in the student portal.', [
+            sendSuccess('Job opportunity submitted successfully! It is now pending admin approval before appearing to students.', [
                 'job_id' => $newJobId,
-                'status' => 'LIVE'
+                'status' => 'PENDING'
             ]);
 
         } catch (Exception $e) {

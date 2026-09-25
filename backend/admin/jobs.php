@@ -10,23 +10,40 @@ $pdo = getDatabaseConnection();
 $method = $_SERVER['REQUEST_METHOD'];
 
 if ($method === 'GET') {
-    $status = trim($_GET['status'] ?? '');
-    $sql = "SELECT j.*, c.company_name, c.logo_path,
-                   r.recruiter_id, u.email AS recruiter_email,
+    $status = strtoupper(trim($_GET['status'] ?? ''));
+    $sql = "SELECT j.*, c.company_name, c.logo_path, c.industry, c.location AS company_location,
+                   r.recruiter_id, 
+                   COALESCE(NULLIF(r.recruiter_name, ''), CONCAT(c.company_name, ' Recruiter')) AS recruiter_name,
+                   r.designation AS recruiter_designation,
+                   r.phone AS recruiter_phone,
+                   u.email AS recruiter_email,
                    COUNT(DISTINCT a.application_id) AS applicant_count,
-                   GROUP_CONCAT(DISTINCT s.skill_name SEPARATOR ', ') AS required_skills
+                   (
+                       SELECT GROUP_CONCAT(DISTINCT s.skill_name SEPARATOR ', ')
+                       FROM job_skills js
+                       JOIN skills s ON js.skill_id = s.skill_id
+                       WHERE js.job_id = j.job_id
+                   ) AS required_skills,
+                   (
+                       SELECT GROUP_CONCAT(DISTINCT b.branch_name SEPARATOR ', ')
+                       FROM job_eligible_branches jeb
+                       JOIN branches b ON jeb.branch_id = b.branch_id
+                       WHERE jeb.job_id = j.job_id
+                   ) AS eligible_branches
             FROM jobs j
             JOIN companies c ON j.company_id = c.company_id
             LEFT JOIN recruiters r ON j.posted_by_recruiter_id = r.recruiter_id
             LEFT JOIN users u ON r.user_id = u.user_id
-            LEFT JOIN applications a ON j.job_id = a.job_id
-            LEFT JOIN job_skills js ON j.job_id = js.job_id
-            LEFT JOIN skills s ON js.skill_id = s.skill_id";
+            LEFT JOIN applications a ON j.job_id = a.job_id";
 
     $params = [];
     if (!empty($status)) {
-        $sql .= " WHERE j.status = :st";
-        $params['st'] = $status;
+        if ($status === 'APPROVED') {
+            $sql .= " WHERE (j.status = 'APPROVED' OR j.status = 'LIVE')";
+        } else {
+            $sql .= " WHERE j.status = :st";
+            $params['st'] = $status;
+        }
     }
     $sql .= " GROUP BY j.job_id ORDER BY (j.status = 'PENDING') DESC, j.created_at DESC";
 
@@ -34,9 +51,20 @@ if ($method === 'GET') {
     $stmt->execute($params);
     $jobs = $stmt->fetchAll();
 
+    // Summary counts for filter tabs & badge
+    $countsStmt = $pdo->query("SELECT 
+        COUNT(*) AS total,
+        COUNT(CASE WHEN status = 'PENDING' THEN 1 END) AS pending,
+        COUNT(CASE WHEN status IN ('APPROVED', 'LIVE') THEN 1 END) AS approved,
+        COUNT(CASE WHEN status = 'REJECTED' THEN 1 END) AS rejected,
+        COUNT(CASE WHEN status = 'CLOSED' THEN 1 END) AS closed
+        FROM jobs");
+    $counts = $countsStmt->fetch() ?: ['total' => 0, 'pending' => 0, 'approved' => 0, 'rejected' => 0, 'closed' => 0];
+
     sendSuccess('Jobs loaded', [
-        'count' => count($jobs),
-        'jobs'  => $jobs
+        'count'  => count($jobs),
+        'jobs'   => $jobs,
+        'counts' => $counts
     ]);
 
 } elseif ($method === 'POST') {
@@ -59,15 +87,15 @@ if ($method === 'GET') {
         sendError('Job record not found.', 404);
     }
 
-    $newStatus = 'LIVE';
-    $msg = "Job '{$job['title']}' has been approved and is now LIVE for students to apply!";
+    $newStatus = 'APPROVED';
+    $msg = "Job opportunity '{$job['title']}' has been approved and is now visible to students!";
 
     if ($action === 'reject') {
         $newStatus = 'REJECTED';
-        $msg = "Job '{$job['title']}' was rejected by the Placement Cell.";
+        $msg = "Job opportunity '{$job['title']}' was rejected by the Placement Cell.";
     } elseif ($action === 'close') {
         $newStatus = 'CLOSED';
-        $msg = "Job '{$job['title']}' has been closed.";
+        $msg = "Job opportunity '{$job['title']}' has been closed.";
     }
 
     $upd = $pdo->prepare("UPDATE jobs SET status = :st WHERE job_id = :jid");
@@ -82,7 +110,10 @@ if ($method === 'GET') {
         ]);
     }
 
-    sendSuccess("Job status updated to {$newStatus}.");
+    sendSuccess("Job status updated to {$newStatus}.", [
+        'job_id' => $jobId,
+        'status' => $newStatus
+    ]);
 } else {
     sendError('Method Not Allowed', 405);
 }

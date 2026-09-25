@@ -119,7 +119,7 @@ try {
             $recruiterName = ucwords(str_replace(['.', '_', '-'], ' ', $prefix));
         }
 
-        // Find or create company (unverified until approved)
+        // Find or create company
         $cStmt = $pdo->prepare("SELECT company_id, is_verified FROM companies WHERE company_name = :cname LIMIT 1");
         $cStmt->execute(['cname' => $companyName]);
         $existingComp = $cStmt->fetch();
@@ -127,7 +127,7 @@ try {
         if ($existingComp) {
             $companyId = (int)$existingComp['company_id'];
         } else {
-            $compInsert = $pdo->prepare("INSERT INTO companies (company_name, website, location, industry, is_verified) VALUES (:name, :web, :loc, :ind, 0)");
+            $compInsert = $pdo->prepare("INSERT INTO companies (company_name, website, location, industry, is_verified) VALUES (:name, :web, :loc, :ind, 1)");
             $compInsert->execute([
                 'name' => $companyName,
                 'web'  => $website,
@@ -137,14 +137,14 @@ try {
             $companyId = (int)$pdo->lastInsertId();
         }
 
-        // Create User with ACTIVE status (can log in and view dashboard/profile)
+        // Create User with ACTIVE status (can log in and access portal immediately)
         $uStmt = $pdo->prepare("INSERT INTO users (email, password_hash, role, status) VALUES (:email, :hash, 'RECRUITER', 'ACTIVE')");
         $uStmt->execute(['email' => $email, 'hash' => $passwordHash]);
         $userId = (int)$pdo->lastInsertId();
 
-        // Create Recruiter record with PENDING approval status
+        // Create Recruiter record with APPROVED status immediately
         $rStmt = $pdo->prepare("INSERT INTO recruiters (user_id, recruiter_name, company_id, designation, phone, approval_status, approved_at)
-                                VALUES (:uid, :rname, :cid, :desig, :phone, 'PENDING', NULL)");
+                                VALUES (:uid, :rname, :cid, :desig, :phone, 'APPROVED', NOW())");
         $rStmt->execute([
             'uid'   => $userId,
             'rname' => $recruiterName,
@@ -153,33 +153,20 @@ try {
             'phone' => $phone
         ]);
 
-        // Send alert to Admin
-        $adminStmt = $pdo->query("SELECT user_id FROM users WHERE role = 'ADMIN' LIMIT 1");
-        $admin = $adminStmt->fetch();
-        if ($admin) {
-            $notif = $pdo->prepare("INSERT INTO notifications (user_id, title, message, link_url) VALUES (:uid, :title, :msg, :link)");
-            $notif->execute([
-                'uid'   => $admin['user_id'],
-                'title' => 'New Recruiter Pending Verification',
-                'msg'   => "Recruiter {$recruiterName} registered for {$companyName} ({$email}) awaiting approval.",
-                'link'  => 'recruiters.html'
-            ]);
-        }
-
-        // Send confirmation to Recruiter
+        // Send welcome notification to Recruiter
         $recNotif = $pdo->prepare("INSERT INTO notifications (user_id, title, message, link_url) VALUES (:uid, :title, :msg, :link)");
         $recNotif->execute([
             'uid'   => $userId,
-            'title' => 'Account Registration Submitted',
-            'msg'   => "Your recruiter account for {$companyName} has been submitted for admin approval. You can view your dashboard and profile while verification is pending.",
-            'link'  => 'dashboard.html'
+            'title' => 'Welcome to CareerBridge',
+            'msg'   => "Your recruiter account for {$companyName} is ready. You can now post campus job opportunities for review.",
+            'link'  => 'post-job.html'
         ]);
 
         $pdo->commit();
 
-        sendSuccess('Registration submitted successfully! Your recruiter account is pending administrator approval before you can publish jobs.', [
-            'role' => 'RECRUITER',
-            'status' => 'PENDING',
+        sendSuccess('Registration successful! You can now log in to post jobs.', [
+            'role'     => 'RECRUITER',
+            'status'   => 'APPROVED',
             'redirect' => 'login.html'
         ]);
     }
