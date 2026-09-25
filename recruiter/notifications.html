@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications - Recruiter Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/forms.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+    <div class="dashboard-wrapper">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="brand-icon"><i class="fas fa-building"></i></div>
+                <div>
+                    <h2>CareerBridge</h2>
+                    <span class="sidebar-role-badge" style="background: #14532d; color: #86efac;">RECRUITER PORTAL</span>
+                </div>
+            </div>
+
+            <ul class="sidebar-menu">
+                <li class="menu-section-label">Overview</li>
+                <li><a href="dashboard.html"><i class="fas fa-th-large"></i> Dashboard</a></li>
+                <li><a href="profile.html"><i class="fas fa-id-card"></i> Company Profile</a></li>
+                
+                <li class="menu-section-label">Job Postings</li>
+                <li><a href="post-job.html"><i class="fas fa-plus-circle"></i> Post New Job</a></li>
+                <li><a href="manage-jobs.html"><i class="fas fa-briefcase"></i> Manage Jobs</a></li>
+
+                <li class="menu-section-label">Candidates Pipeline</li>
+                <li><a href="applicants.html"><i class="fas fa-users"></i> All Applicants</a></li>
+                <li><a href="shortlisted.html"><i class="fas fa-star"></i> Shortlisted</a></li>
+                <li><a href="interviews.html"><i class="fas fa-calendar-check"></i> Interviews</a></li>
+                <li><a href="selected-candidates.html"><i class="fas fa-user-check"></i> Selected Hires</a></li>
+
+                <li class="menu-section-label">Performance</li>
+                <li><a href="analytics.html"><i class="fas fa-chart-bar"></i> Hiring Analytics</a></li>
+                <li><a href="notifications.html" class="active"><i class="fas fa-bell"></i> Notifications</a></li>
+                <li><a href="javascript:void(0)" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+
+            <div class="sidebar-footer">
+                <div class="user-brief">
+                    <div class="user-avatar" style="background: #059669;"><i class="fas fa-user-tie"></i></div>
+                    <div class="user-meta">
+                        <div class="user-name recruiter-display-name">Recruiter User</div>
+                        <div class="user-email">Corporate Partner</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="topbar">
+                <div class="page-title">
+                    <h1>Recruiter Activity & Notifications</h1>
+                    <p>Alerts regarding new student submissions, administrative approvals, and candidate decisions.</p>
+                </div>
+                <div class="topbar-actions">
+                    <button class="btn btn-outline btn-sm" onclick="markAllNotificationsRead()">
+                        <i class="fas fa-check-double"></i> Mark All as Read
+                    </button>
+                </div>
+            </header>
+
+            <div class="content-body" style="max-width: 850px;">
+                <div id="notifications-container">
+                    <div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Loading alerts...</p></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/recruiter.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const authed = await initRecruiterView();
+            if (!authed) return;
+            await loadRecruiterNotifications();
+        });
+
+        async function loadRecruiterNotifications() {
+            const container = document.getElementById('notifications-container');
+            try {
+                const res = await apiRequest('student/notifications.php');
+                const notifs = res.notifications || [];
+
+                if (notifs.length === 0) {
+                    container.innerHTML = '<div class="empty-state"><i class="fas fa-bell-slash"></i><h3>No Notifications</h3><p>You have no recent notifications.</p></div>';
+                    return;
+                }
+
+                container.innerHTML = notifs.map(n => `
+                    <div class="card" style="margin-bottom: 1rem; border-left: 4px solid ${n.is_read ? 'var(--border-color)' : 'var(--primary)'}; background: ${n.is_read ? '#fff' : '#f8fafc'};">
+                        <div class="card-body" style="display: flex; justify-content: space-between; align-items: flex-start;">
+                            <div>
+                                <h4 style="margin: 0 0 0.35rem 0; font-size: 1rem; color: var(--text-color);">${n.title}</h4>
+                                <p style="margin: 0 0 0.5rem 0; color: var(--text-muted); font-size: 0.9rem;">${n.message}</p>
+                                <span style="font-size: 0.75rem; color: var(--text-muted);"><i class="far fa-clock"></i> ${formatDate(n.created_at)}</span>
+                            </div>
+                            ${!n.is_read ? `
+                                <button class="btn btn-outline btn-sm" onclick="markNotifRead(${n.notification_id})">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                            ` : '<span style="font-size: 0.75rem; color: var(--text-muted);"><i class="fas fa-check-circle" style="color: var(--success);"></i> Read</span>'}
+                        </div>
+                    </div>
+                `).join('');
+            } catch (err) {
+                container.innerHTML = '<div class="empty-state">Failed to load notifications.</div>';
+            }
+        }
+
+        async function markNotifRead(id) {
+            try {
+                await apiRequest('student/notifications.php', {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'mark_read', notification_id: id })
+                });
+                loadRecruiterNotifications();
+            } catch (e) {
+                showToast('error', 'Error', e.message);
+            }
+        }
+
+        async function markAllNotificationsRead() {
+            try {
+                await apiRequest('student/notifications.php', {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'mark_all_read' })
+                });
+                showToast('success', 'Cleared', 'All notifications marked as read.');
+                loadRecruiterNotifications();
+            } catch (e) {
+                showToast('error', 'Error', e.message);
+            }
+        }
+    </script>
+</body>
+</html>

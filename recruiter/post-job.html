@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post New Job - Recruiter Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/forms.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+    <div class="dashboard-wrapper">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="brand-icon"><i class="fas fa-building"></i></div>
+                <div>
+                    <h2>CareerBridge</h2>
+                    <span class="sidebar-role-badge" style="background: #14532d; color: #86efac;">RECRUITER PORTAL</span>
+                </div>
+            </div>
+
+            <ul class="sidebar-menu">
+                <li class="menu-section-label">Overview</li>
+                <li><a href="dashboard.html"><i class="fas fa-th-large"></i> Dashboard</a></li>
+                <li><a href="profile.html"><i class="fas fa-id-card"></i> Company Profile</a></li>
+                
+                <li class="menu-section-label">Job Postings</li>
+                <li><a href="post-job.html" class="active"><i class="fas fa-plus-circle"></i> Post New Job</a></li>
+                <li><a href="manage-jobs.html"><i class="fas fa-briefcase"></i> Manage Jobs</a></li>
+
+                <li class="menu-section-label">Candidates Pipeline</li>
+                <li><a href="applicants.html"><i class="fas fa-users"></i> All Applicants</a></li>
+                <li><a href="shortlisted.html"><i class="fas fa-star"></i> Shortlisted</a></li>
+                <li><a href="interviews.html"><i class="fas fa-calendar-check"></i> Interviews</a></li>
+                <li><a href="selected-candidates.html"><i class="fas fa-user-check"></i> Selected Hires</a></li>
+
+                <li class="menu-section-label">Performance</li>
+                <li><a href="analytics.html"><i class="fas fa-chart-bar"></i> Hiring Analytics</a></li>
+                <li><a href="notifications.html"><i class="fas fa-bell"></i> Notifications</a></li>
+                <li><a href="javascript:void(0)" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+
+            <div class="sidebar-footer">
+                <div class="user-brief">
+                    <div class="user-avatar" style="background: #059669;"><i class="fas fa-user-tie"></i></div>
+                    <div class="user-meta">
+                        <div class="user-name recruiter-display-name">Recruiter User</div>
+                        <div class="user-email">Corporate Partner</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="topbar">
+                <div class="page-title">
+                    <h1>Publish Recruitment Opening</h1>
+                    <p>Postings are subject to rapid T&P Cell verification before going LIVE.</p>
+                </div>
+            </header>
+
+            <div class="content-body" style="max-width: 900px;">
+                <!-- Recruiter Verification Alert Container -->
+                <div id="post-job-approval-alert"></div>
+
+                <div class="card">
+                    <div class="card-header">
+                        <h3 style="font-weight: 700;">Job Vacancy Details</h3>
+                    </div>
+                    <div class="card-body">
+                        <form id="post-job-form" onsubmit="handlePostJobSubmit(event)">
+                            <div class="form-group">
+                                <label class="form-label">Position Title *</label>
+                                <input type="text" id="job-title" class="form-control" placeholder="e.g. Software Development Engineer, Cloud Intern" required>
+                            </div>
+
+                            <div class="form-row-3">
+                                <div class="form-group">
+                                    <label class="form-label">Employment Type *</label>
+                                    <select id="job-type" class="form-control" required>
+                                        <option value="FULL_TIME">Full-Time</option>
+                                        <option value="INTERNSHIP">Internship</option>
+                                        <option value="PART_TIME">Part-Time</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Work Mode *</label>
+                                    <select id="job-mode" class="form-control" required>
+                                        <option value="ON_SITE">On-Site</option>
+                                        <option value="HYBRID" selected>Hybrid</option>
+                                        <option value="REMOTE">Remote</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Location *</label>
+                                    <input type="text" id="job-location" class="form-control" placeholder="City, State or Remote" required>
+                                </div>
+                            </div>
+
+                            <div class="form-row-3">
+                                <div class="form-group">
+                                    <label class="form-label">Salary / Stipend (Annual or Total) *</label>
+                                    <input type="number" id="job-salary" class="form-control" placeholder="e.g. 1800000" required>
+                                    <span class="form-help">Enter in INR (e.g. 1800000 for ₹18 LPA)</span>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Minimum CGPA</label>
+                                    <input type="number" step="0.01" id="job-min-cgpa" class="form-control" value="6.50">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Openings Count</label>
+                                    <input type="number" id="job-openings" class="form-control" value="5">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Experience Requirement</label>
+                                    <input type="text" id="job-exp" class="form-control" value="Fresher">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Application Deadline *</label>
+                                    <input type="date" id="job-deadline" class="form-control" required>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Detailed Job Description & Responsibilities *</label>
+                                <textarea id="job-desc" class="form-control" rows="5" placeholder="Specify technical expectations, day-to-day duties, and team context..." required></textarea>
+                            </div>
+
+                            <div class="form-group" style="margin-top: 1.5rem;">
+                                <label class="form-label">Required Technical Competencies (Select All That Apply)</label>
+                                <div id="skills-checkboxes" style="background: #f8fafc; padding: 1rem; border-radius: var(--radius-sm); max-height: 160px; overflow-y: auto;">
+                                    Loading skills...
+                                </div>
+                            </div>
+
+                            <div class="form-group" style="margin-top: 1.5rem;">
+                                <label class="form-label">Eligible Branches (Select Applicable)</label>
+                                <div id="branches-checkboxes" style="background: #f8fafc; padding: 1rem; border-radius: var(--radius-sm);">
+                                    Loading branches...
+                                </div>
+                            </div>
+
+                            <div style="margin-top: 2rem; border-top: 1px solid #f1f5f9; padding-top: 1.5rem; text-align: right;">
+                                <button type="submit" id="submit-job-btn" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-paper-plane"></i> Post Opportunity
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/recruiter.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                await initRecruiterView();
+            } catch (e) {
+                console.warn('initRecruiterView error:', e);
+            }
+            loadPostJobFormData();
+            // Default deadline 30 days ahead
+            const d = new Date();
+            d.setDate(d.getDate() + 30);
+            const deadlineEl = document.getElementById('job-deadline');
+            if (deadlineEl) deadlineEl.value = d.toISOString().split('T')[0];
+        });
+    </script>
+</body>
+</html>

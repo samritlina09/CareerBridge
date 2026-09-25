@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browse Jobs - Student Placement Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/tables.css">
+    <link rel="stylesheet" href="../css/forms.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+    <div class="dashboard-wrapper">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="brand-icon"><i class="fas fa-graduation-cap"></i></div>
+                <div>
+                    <h2>CareerBridge</h2>
+                    <span class="sidebar-role-badge">STUDENT PORTAL</span>
+                </div>
+            </div>
+
+            <ul class="sidebar-menu">
+                <li class="menu-section-label">Overview</li>
+                <li><a href="dashboard.html"><i class="fas fa-th-large"></i> Dashboard</a></li>
+                <li><a href="profile.html"><i class="fas fa-user-circle"></i> My Profile</a></li>
+                
+                <li class="menu-section-label">Academic Portfolio</li>
+                <li><a href="education.html"><i class="fas fa-university"></i> Education</a></li>
+                <li><a href="skills.html"><i class="fas fa-code"></i> Skills</a></li>
+                <li><a href="projects.html"><i class="fas fa-project-diagram"></i> Projects</a></li>
+                <li><a href="certifications.html"><i class="fas fa-award"></i> Certifications</a></li>
+                <li><a href="resume.html"><i class="fas fa-file-alt"></i> Resume</a></li>
+
+                <li class="menu-section-label">Recruitment</li>
+                <li><a href="jobs.html" class="active"><i class="fas fa-briefcase"></i> Browse Jobs</a></li>
+                <li><a href="recommendations.html"><i class="fas fa-briefcase"></i> Recommended Jobs</a></li>
+                <li><a href="applications.html"><i class="fas fa-paper-plane"></i> My Applications</a></li>
+                <li><a href="interviews.html"><i class="fas fa-calendar-alt"></i> Interviews</a></li>
+                <li><a href="placement.html"><i class="fas fa-trophy"></i> Placement Status</a></li>
+
+                <li class="menu-section-label">Account</li>
+                <li><a href="notifications.html"><i class="fas fa-bell"></i> Notifications</a></li>
+                <li><a href="javascript:void(0)" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+
+            <div class="sidebar-footer">
+                <div class="user-brief">
+                    <div class="user-avatar"><i class="fas fa-user"></i></div>
+                    <div class="user-meta">
+                        <div class="user-name student-display-name">Student User</div>
+                        <div class="user-email student-display-email">student@campus.edu</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="topbar">
+                <div class="page-title">
+                    <h1>Browse Jobs & Internships</h1>
+                    <p>Verified campus recruitment listings from corporate partners.</p>
+                </div>
+                <div class="topbar-actions">
+                    <a href="notifications.html" class="notif-bell-btn">
+                        <i class="fas fa-bell"></i>
+                        <span id="notif-badge-count" class="notif-badge" style="display: none;">0</span>
+                    </a>
+                </div>
+            </header>
+
+            <div class="content-body">
+                <!-- Filters -->
+                <div class="filter-bar">
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="job-search-input" placeholder="Search by role, company, or skills...">
+                    </div>
+                    <div class="filter-controls">
+                        <select id="filter-job-type" class="filter-select">
+                            <option value="">All Types</option>
+                            <option value="FULL_TIME">Full-Time</option>
+                            <option value="INTERNSHIP">Internship</option>
+                        </select>
+                        <select id="filter-work-mode" class="filter-select">
+                            <option value="">All Modes</option>
+                            <option value="ON_SITE">On-Site</option>
+                            <option value="HYBRID">Hybrid</option>
+                            <option value="REMOTE">Remote</option>
+                        </select>
+                        <label style="display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.85rem; cursor: pointer; color: var(--text-secondary);">
+                            <input type="checkbox" id="filter-eligible-only"> Eligible Only
+                        </label>
+                        <button class="btn btn-primary btn-sm" onclick="loadJobCatalog(true)">
+                            <i class="fas fa-filter"></i> Filter
+                        </button>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <span id="total-jobs-counter" class="badge badge-primary">Loading opportunities...</span>
+                </div>
+
+                <div id="jobs-catalog-container">
+                    <div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Loading jobs...</p></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/jobs.js"></script>
+    <script src="../js/student.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const authed = await initStudentView();
+            if (!authed) return;
+            loadJobCatalog(true);
+            const input = document.getElementById('job-search-input');
+            if (input) {
+                input.addEventListener('keyup', (e) => {
+                    if (e.key === 'Enter') loadJobCatalog(true);
+                });
+            }
+        });
+    </script>
+</body>
+</html>

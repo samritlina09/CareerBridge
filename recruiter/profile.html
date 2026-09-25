@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Profile - Recruiter Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/forms.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+    <div class="dashboard-wrapper">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="brand-icon"><i class="fas fa-building"></i></div>
+                <div>
+                    <h2>CareerBridge</h2>
+                    <span class="sidebar-role-badge" style="background: #14532d; color: #86efac;">RECRUITER PORTAL</span>
+                </div>
+            </div>
+
+            <ul class="sidebar-menu">
+                <li class="menu-section-label">Overview</li>
+                <li><a href="dashboard.html"><i class="fas fa-th-large"></i> Dashboard</a></li>
+                <li><a href="profile.html" class="active"><i class="fas fa-id-card"></i> Company Profile</a></li>
+                
+                <li class="menu-section-label">Job Postings</li>
+                <li><a href="post-job.html"><i class="fas fa-plus-circle"></i> Post New Job</a></li>
+                <li><a href="manage-jobs.html"><i class="fas fa-briefcase"></i> Manage Jobs</a></li>
+
+                <li class="menu-section-label">Candidates Pipeline</li>
+                <li><a href="applicants.html"><i class="fas fa-users"></i> All Applicants</a></li>
+                <li><a href="shortlisted.html"><i class="fas fa-star"></i> Shortlisted</a></li>
+                <li><a href="interviews.html"><i class="fas fa-calendar-check"></i> Interviews</a></li>
+                <li><a href="selected-candidates.html"><i class="fas fa-user-check"></i> Selected Hires</a></li>
+
+                <li class="menu-section-label">Performance</li>
+                <li><a href="analytics.html"><i class="fas fa-chart-bar"></i> Hiring Analytics</a></li>
+                <li><a href="notifications.html"><i class="fas fa-bell"></i> Notifications</a></li>
+                <li><a href="javascript:void(0)" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+
+            <div class="sidebar-footer">
+                <div class="user-brief">
+                    <div class="user-avatar" style="background: #059669;"><i class="fas fa-user-tie"></i></div>
+                    <div class="user-meta">
+                        <div class="user-name recruiter-display-name">Recruiter User</div>
+                        <div class="user-email">Corporate Partner</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="topbar">
+                <div class="page-title">
+                    <h1>Company & Recruiter Information</h1>
+                    <p>Manage corporate branding, headquarters location, and representative contact details.</p>
+                </div>
+            </header>
+
+            <div class="content-body" style="max-width: 900px;">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 style="font-weight: 700;">Corporate Profile</h3>
+                    </div>
+                    <div class="card-body">
+                        <form id="recruiter-profile-form" onsubmit="saveRecruiterProfile(event)">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Company Name *</label>
+                                    <input type="text" id="rec-company-name" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Industry Domain</label>
+                                    <input type="text" id="rec-industry" class="form-control" placeholder="e.g. Software & Cloud Computing">
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Corporate Website</label>
+                                    <input type="url" id="rec-website" class="form-control" placeholder="https://company.com">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Headquarters / Location</label>
+                                    <input type="text" id="rec-location" class="form-control" placeholder="City, State">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">Company Description</label>
+                                <textarea id="rec-description" class="form-control" rows="3" placeholder="Brief description presented to students on job detail pages..."></textarea>
+                            </div>
+
+                            <h4 style="font-size: 1rem; color: var(--primary); margin: 2rem 0 1rem;">Recruiter Contact Information</h4>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label">Your Designation *</label>
+                                    <input type="text" id="rec-designation" class="form-control" required>
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">Contact Phone</label>
+                                    <input type="text" id="rec-phone" class="form-control">
+                                </div>
+                            </div>
+
+                            <div style="margin-top: 2rem; border-top: 1px solid #f1f5f9; padding-top: 1.5rem; text-align: right;">
+                                <button type="submit" id="save-rec-btn" class="btn btn-primary btn-lg">
+                                    <i class="fas fa-save"></i> Save Changes
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/recruiter.js"></script>
+    <script>
+        async function loadProfile() {
+            try {
+                const res = await apiRequest('recruiter/company.php');
+                const p = res.profile;
+                document.getElementById('rec-company-name').value = p.company_name || '';
+                document.getElementById('rec-industry').value = p.industry || '';
+                document.getElementById('rec-website').value = p.website || '';
+                document.getElementById('rec-location').value = p.location || '';
+                document.getElementById('rec-description').value = p.description || '';
+                document.getElementById('rec-designation').value = p.designation || '';
+                document.getElementById('rec-phone').value = p.phone || '';
+            } catch (err) {
+                showToast('error', 'Error', err.message);
+            }
+        }
+
+        async function saveRecruiterProfile(e) {
+            e.preventDefault();
+            const btn = document.getElementById('save-rec-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
+
+            const payload = {
+                company_name: document.getElementById('rec-company-name').value.trim(),
+                industry: document.getElementById('rec-industry').value.trim(),
+                website: document.getElementById('rec-website').value.trim(),
+                location: document.getElementById('rec-location').value.trim(),
+                description: document.getElementById('rec-description').value.trim(),
+                designation: document.getElementById('rec-designation').value.trim(),
+                phone: document.getElementById('rec-phone').value.trim()
+            };
+
+            try {
+                const res = await apiRequest('recruiter/company.php', { method: 'POST', body: JSON.stringify(payload) });
+                showToast('success', 'Profile Updated', res.message);
+            } catch (err) {
+                showToast('error', 'Failed', err.message);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-save"></i> Save Changes';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const authed = await initRecruiterView();
+            if (!authed) return;
+            loadProfile();
+        });
+    </script>
+</body>
+</html>

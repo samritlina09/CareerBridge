@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selected Hires - Recruiter Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/tables.css">
+    <link rel="stylesheet" href="../css/forms.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+    <div class="dashboard-wrapper">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="brand-icon"><i class="fas fa-building"></i></div>
+                <div>
+                    <h2>CareerBridge</h2>
+                    <span class="sidebar-role-badge" style="background: #14532d; color: #86efac;">RECRUITER PORTAL</span>
+                </div>
+            </div>
+
+            <ul class="sidebar-menu">
+                <li class="menu-section-label">Overview</li>
+                <li><a href="dashboard.html"><i class="fas fa-th-large"></i> Dashboard</a></li>
+                <li><a href="profile.html"><i class="fas fa-id-card"></i> Company Profile</a></li>
+                
+                <li class="menu-section-label">Job Postings</li>
+                <li><a href="post-job.html"><i class="fas fa-plus-circle"></i> Post New Job</a></li>
+                <li><a href="manage-jobs.html"><i class="fas fa-briefcase"></i> Manage Jobs</a></li>
+
+                <li class="menu-section-label">Candidates Pipeline</li>
+                <li><a href="applicants.html"><i class="fas fa-users"></i> All Applicants</a></li>
+                <li><a href="shortlisted.html"><i class="fas fa-star"></i> Shortlisted</a></li>
+                <li><a href="interviews.html"><i class="fas fa-calendar-check"></i> Interviews</a></li>
+                <li><a href="selected-candidates.html" class="active"><i class="fas fa-user-check"></i> Selected Hires</a></li>
+
+                <li class="menu-section-label">Performance</li>
+                <li><a href="analytics.html"><i class="fas fa-chart-bar"></i> Hiring Analytics</a></li>
+                <li><a href="notifications.html"><i class="fas fa-bell"></i> Notifications</a></li>
+                <li><a href="javascript:void(0)" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+
+            <div class="sidebar-footer">
+                <div class="user-brief">
+                    <div class="user-avatar" style="background: #059669;"><i class="fas fa-user-tie"></i></div>
+                    <div class="user-meta">
+                        <div class="user-name recruiter-display-name">Recruiter User</div>
+                        <div class="user-email">Corporate Partner</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="topbar">
+                <div class="page-title">
+                    <h1>Selected Candidates & Official Hires</h1>
+                    <p>Candidates with confirmed job offers accepted via atomic MySQL placement procedures.</p>
+                </div>
+            </header>
+
+            <div class="content-body">
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Hired Candidate</th>
+                                <th>Position</th>
+                                <th>Branch</th>
+                                <th>CGPA</th>
+                                <th>Offered Package</th>
+                                <th>Accepted Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="selected-hires-tbody">
+                            <tr><td colspan="7" style="text-align: center; padding: 2rem;">Loading selected hires...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/recruiter.js"></script>
+    <script>
+        async function loadSelectedHires() {
+            const tbody = document.getElementById('selected-hires-tbody');
+            try {
+                const res = await apiRequest('recruiter/applicants.php?status=SELECTED');
+                if (res.applicants.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" class="empty-state">No candidates marked as SELECTED yet.</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = res.applicants.map(a => `
+                    <tr>
+                        <td><strong>${a.student_name}</strong><br><small style="color: var(--text-muted);">${a.roll_number}</small></td>
+                        <td>${a.job_title}</td>
+                        <td>${a.branch_code}</td>
+                        <td><strong>${a.cgpa}</strong></td>
+                        <td><strong style="color: var(--success);">${formatCurrency(a.salary_stipend)}</strong></td>
+                        <td>${formatDate(a.applied_at)}</td>
+                        <td><span class="status-pill status-selected">OFFER EXTENDED</span></td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="7">${err.message}</td></tr>`;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const authed = await initRecruiterView();
+            if (!authed) return;
+            loadSelectedHires();
+        });
+    </script>
+</body>
+</html>

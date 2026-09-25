@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Applications - Student Placement Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/tables.css">
+    <link rel="stylesheet" href="../css/forms.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+    <div class="dashboard-wrapper">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="brand-icon"><i class="fas fa-graduation-cap"></i></div>
+                <div>
+                    <h2>CareerBridge</h2>
+                    <span class="sidebar-role-badge">STUDENT PORTAL</span>
+                </div>
+            </div>
+
+            <ul class="sidebar-menu">
+                <li class="menu-section-label">Overview</li>
+                <li><a href="dashboard.html"><i class="fas fa-th-large"></i> Dashboard</a></li>
+                <li><a href="profile.html"><i class="fas fa-user-circle"></i> My Profile</a></li>
+                
+                <li class="menu-section-label">Academic Portfolio</li>
+                <li><a href="education.html"><i class="fas fa-university"></i> Education</a></li>
+                <li><a href="skills.html"><i class="fas fa-code"></i> Skills</a></li>
+                <li><a href="projects.html"><i class="fas fa-project-diagram"></i> Projects</a></li>
+                <li><a href="certifications.html"><i class="fas fa-award"></i> Certifications</a></li>
+                <li><a href="resume.html"><i class="fas fa-file-alt"></i> Resume</a></li>
+
+                <li class="menu-section-label">Recruitment</li>
+                <li><a href="jobs.html"><i class="fas fa-briefcase"></i> Browse Jobs</a></li>
+                <li><a href="recommendations.html"><i class="fas fa-briefcase"></i> Recommended Jobs</a></li>
+                <li><a href="applications.html" class="active"><i class="fas fa-paper-plane"></i> My Applications</a></li>
+                <li><a href="interviews.html"><i class="fas fa-calendar-alt"></i> Interviews</a></li>
+                <li><a href="placement.html"><i class="fas fa-trophy"></i> Placement Status</a></li>
+
+                <li class="menu-section-label">Account</li>
+                <li><a href="notifications.html"><i class="fas fa-bell"></i> Notifications</a></li>
+                <li><a href="javascript:void(0)" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+
+            <div class="sidebar-footer">
+                <div class="user-brief">
+                    <div class="user-avatar"><i class="fas fa-user"></i></div>
+                    <div class="user-meta">
+                        <div class="user-name student-display-name">Student User</div>
+                        <div class="user-email student-display-email">student@campus.edu</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="topbar">
+                <div class="page-title">
+                    <h1>My Applications & Recruitment Pipeline</h1>
+                    <p>Live status tracker across screening, interviews, and final selection.</p>
+                </div>
+                <div class="topbar-actions">
+                    <a href="jobs.html" class="btn btn-primary btn-sm">
+                        <i class="fas fa-search"></i> Apply to More Jobs
+                    </a>
+                </div>
+            </header>
+
+            <div class="content-body">
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Job Title</th>
+                                <th>Company</th>
+                                <th>Salary / Stipend</th>
+                                <th>Applied Date</th>
+                                <th>Status</th>
+                                <th>Interview Schedule</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="student-applications-tbody">
+                            <tr><td colspan="7" style="text-align: center; padding: 2rem;">Loading applications...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Interview Rounds Timeline Modal -->
+    <div id="interview-rounds-modal" class="modal-overlay">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3>Interview Schedule & Details</h3>
+                <button class="modal-close" onclick="closeModal('interview-rounds-modal')">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="interview-rounds-timeline"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary btn-sm" onclick="closeModal('interview-rounds-modal')">Close</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/applications.js"></script>
+    <script src="../js/student.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const authed = await initStudentView();
+            if (!authed) return;
+            loadStudentApplicationsTable();
+        });
+    </script>
+</body>
+</html>

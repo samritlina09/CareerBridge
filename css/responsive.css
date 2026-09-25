@@ -1,0 +1,49 @@
+/* ====================================================================
+   RESPONSIVE MEDIA QUERIES (MOBILE, TABLET, DESKTOP)
+   ==================================================================== */
+
+@media (max-width: 1024px) {
+    .charts-grid {
+        grid-template-columns: 1fr;
+    }
+    .footer-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+    }
+    .sidebar.open {
+        transform: translateX(0);
+    }
+    .main-content {
+        margin-left: 0;
+    }
+    .topbar {
+        padding: 0 1rem;
+    }
+    .content-body {
+        padding: 1rem;
+    }
+    .form-row, .form-row-3 {
+        grid-template-columns: 1fr;
+    }
+    .auth-split-layout {
+        flex-direction: column;
+    }
+    .auth-brand-side {
+        display: none;
+    }
+    .auth-form-side {
+        width: 100%;
+        padding: 2.5rem 1.5rem;
+    }
+    .nav-links {
+        display: none;
+    }
+    .footer-grid {
+        grid-template-columns: 1fr;
+    }
+}

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Postings Review - T&P Admin Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/tables.css">
+    <link rel="stylesheet" href="../css/forms.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+    <div class="dashboard-wrapper">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="brand-icon"><i class="fas fa-university"></i></div>
+                <div>
+                    <h2>CareerBridge</h2>
+                    <span class="sidebar-role-badge" style="background: #431407; color: #fdba74;">T&P ADMIN CELL</span>
+                </div>
+            </div>
+
+            <ul class="sidebar-menu">
+                <li class="menu-section-label">Overview</li>
+                <li><a href="dashboard.html"><i class="fas fa-th-large"></i> Admin Dashboard</a></li>
+
+                <li class="menu-section-label">User Management</li>
+                <li><a href="students.html"><i class="fas fa-user-graduate"></i> Students Directory</a></li>
+                <li><a href="recruiters.html"><i class="fas fa-user-tie"></i> Recruiters Approvals</a></li>
+                <li><a href="companies.html"><i class="fas fa-building"></i> Partner Companies</a></li>
+
+                <li class="menu-section-label">Recruitment Drives</li>
+                <li><a href="jobs.html" class="active"><i class="fas fa-briefcase"></i> Job Postings Review</a></li>
+                <li><a href="applications.html"><i class="fas fa-file-invoice"></i> All Applications</a></li>
+                <li><a href="interviews.html"><i class="fas fa-calendar-alt"></i> Interview Master</a></li>
+                <li><a href="placements.html"><i class="fas fa-trophy"></i> Placement Records</a></li>
+
+                <li class="menu-section-label">Academic Config</li>
+                <li><a href="departments.html"><i class="fas fa-sitemap"></i> Depts & Branches</a></li>
+                <li><a href="skills.html"><i class="fas fa-tags"></i> Skills Master</a></li>
+
+                <li class="menu-section-label">Analytics & Reports</li>
+                <li><a href="analytics.html"><i class="fas fa-chart-line"></i> Placement Analytics</a></li>
+                <li><a href="reports.html"><i class="fas fa-file-excel"></i> Reports & CSV Export</a></li>
+                <li><a href="notifications.html"><i class="fas fa-bell"></i> Notifications</a></li>
+                <li><a href="javascript:void(0)" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+
+            <div class="sidebar-footer">
+                <div class="user-brief">
+                    <div class="user-avatar" style="background: #c2410c;"><i class="fas fa-shield-alt"></i></div>
+                    <div class="user-meta">
+                        <div class="user-name admin-display-name">T&P Admin</div>
+                        <div class="user-email">admin@campusplacement.com</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="topbar">
+                <div class="page-title">
+                    <h1>Campus Recruitment Drives Review</h1>
+                    <p>Screen employer job descriptions, eligibility criteria, CTC offerings, and publish to students.</p>
+                </div>
+                <div class="topbar-actions">
+                    <button class="btn btn-outline btn-sm" onclick="loadAllJobsTable()">
+                        <i class="fas fa-sync-alt"></i> Refresh Listings
+                    </button>
+                </div>
+            </header>
+
+            <div class="content-body">
+                <div class="card">
+                    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                        <h3><i class="fas fa-briefcase" style="color: var(--primary); margin-right: 0.5rem;"></i> All Placement Drives</h3>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Role & Company</th>
+                                    <th>Type</th>
+                                    <th>Location</th>
+                                    <th>Package / Stipend</th>
+                                    <th>Eligibility</th>
+                                    <th>Status</th>
+                                    <th>Applicants</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="all-jobs-tbody">
+                                <tr><td colspan="8" class="empty-state">Loading job postings...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/admin.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            await initAdminView();
+            await loadAllJobsTable();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account - CareerBridge Placement Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/forms.css">
+    <link rel="stylesheet" href="css/auth.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body class="auth-page">
+
+    <div class="auth-split-layout">
+        <!-- Brand Side -->
+        <div class="auth-brand-side">
+            <div>
+                <a href="index.html" class="brand-logo" style="color: #fff;">
+                    <div class="brand-icon"><i class="fas fa-graduation-cap"></i></div>
+                    <span>Career<span style="color: #38bdf8;">Bridge</span></span>
+                </a>
+            </div>
+
+            <div class="auth-brand-content">
+                <h1>Join the University Placement Network</h1>
+                <p>
+                    Create your account to unlock smart recruitment matching, direct job applications, and candidate management.
+                </p>
+
+                <div class="card" style="background: rgba(255, 255, 255, 0.08); border-color: rgba(255, 255, 255, 0.15); color: #fff; padding: 1.5rem; margin-top: 2rem;">
+                    <h4 style="font-size: 0.95rem; font-weight: 700; color: #93c5fd; margin-bottom: 0.5rem;">
+                        <i class="fas fa-info-circle"></i> Account Types
+                    </h4>
+                    <p style="font-size: 0.85rem; color: #cbd5e1; line-height: 1.5;">
+                        <strong>Students:</strong> Instant activation upon university credential validation.<br><br>
+                        <strong>Recruiters:</strong> Register with your organization profile; verified by the T&P Cell before posting vacancies.
+                    </p>
+                </div>
+            </div>
+
+            <div style="font-size: 0.85rem; color: #64748b;">
+                &copy; 2026 CareerBridge Placement Management System
+            </div>
+        </div>
+
+        <!-- Form Side -->
+        <div class="auth-form-side" style="overflow-y: auto;">
+            <div class="auth-form-header">
+                <h2>Create an Account</h2>
+                <p>Select your user role and fill in your details.</p>
+            </div>
+
+            <!-- Role Selector -->
+            <div class="auth-toggle-role">
+                <button type="button" class="role-btn active" data-role="STUDENT">
+                    <i class="fas fa-user-graduate"></i> Student
+                </button>
+                <button type="button" class="role-btn" data-role="RECRUITER">
+                    <i class="fas fa-building"></i> Company Recruiter
+                </button>
+            </div>
+
+            <form id="register-form">
+                <input type="hidden" id="register-role" value="STUDENT">
+
+                <div class="form-group">
+                    <label class="form-label" for="reg-email">Email Address *</label>
+                    <input type="email" id="reg-email" class="form-control" placeholder="name@campus.edu or work@company.com" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label" for="reg-password">Password *</label>
+                    <input type="password" id="reg-password" class="form-control" placeholder="Min. 6 characters" required>
+                </div>
+
+                <!-- Student Specific Fields -->
+                <div id="student-fields">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">First Name *</label>
+                            <input type="text" id="reg-fname" class="form-control" placeholder="First Name">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Last Name *</label>
+                            <input type="text" id="reg-lname" class="form-control" placeholder="Last Name">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">University Roll No. *</label>
+                            <input type="text" id="reg-roll" class="form-control" placeholder="e.g. 2023CSE045">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Phone Number</label>
+                            <input type="text" id="reg-phone" class="form-control" placeholder="+91 98765 43210">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Academic Branch</label>
+                            <select id="reg-branch" class="form-control">
+                                <option value="1">Computer Science & Engineering</option>
+                                <option value="2">AI & Machine Learning</option>
+                                <option value="3">Data Science</option>
+                                <option value="4">Information Technology</option>
+                                <option value="5">Electronics & Communication</option>
+                                <option value="6">Mechanical Engineering</option>
+                                <option value="7">Master of Computer Applications</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Current CGPA (0.00 - 10.00)</label>
+                            <input type="number" step="0.01" min="0" max="10" id="reg-cgpa" class="form-control" placeholder="8.50">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recruiter Specific Fields -->
+                <div id="recruiter-fields" style="display: none;">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Recruiter Full Name *</label>
+                            <input type="text" id="reg-rec-name" class="form-control" placeholder="e.g. Sarah Jenkins">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Recruiter Designation *</label>
+                            <input type="text" id="reg-designation" class="form-control" placeholder="e.g. University Talent Lead">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Company Name *</label>
+                            <input type="text" id="reg-company" class="form-control" placeholder="e.g. Infosys, Cisco, TechCorp">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Contact Phone</label>
+                            <input type="text" id="reg-rec-phone" class="form-control" placeholder="+91 98765 43210">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Company Website</label>
+                            <input type="url" id="reg-website" class="form-control" placeholder="https://company.com">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Office Location</label>
+                            <input type="text" id="reg-location" class="form-control" placeholder="City, State">
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.75rem; font-size: 1rem; margin-top: 1rem;">
+                    Complete Registration
+                </button>
+            </form>
+
+            <div style="margin-top: 1.5rem; text-align: center; font-size: 0.9rem; color: var(--text-secondary);">
+                Already have an account? <a href="login.html" style="font-weight: 600;">Sign In</a>
+            </div>
+            <div style="margin-top: 0.5rem; text-align: center;">
+                <a href="index.html" style="font-size: 0.85rem; color: var(--text-muted);"><i class="fas fa-arrow-left"></i> Back to Homepage</a>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+    <script src="js/auth.js"></script>
+</body>
+</html>

@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Partner Companies - T&P Admin Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/tables.css">
+    <link rel="stylesheet" href="../css/forms.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+    <div class="dashboard-wrapper">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="brand-icon"><i class="fas fa-university"></i></div>
+                <div>
+                    <h2>CareerBridge</h2>
+                    <span class="sidebar-role-badge" style="background: #431407; color: #fdba74;">T&P ADMIN CELL</span>
+                </div>
+            </div>
+
+            <ul class="sidebar-menu">
+                <li class="menu-section-label">Overview</li>
+                <li><a href="dashboard.html"><i class="fas fa-th-large"></i> Admin Dashboard</a></li>
+
+                <li class="menu-section-label">User Management</li>
+                <li><a href="students.html"><i class="fas fa-user-graduate"></i> Students Directory</a></li>
+                <li><a href="recruiters.html"><i class="fas fa-user-tie"></i> Recruiters Approvals</a></li>
+                <li><a href="companies.html" class="active"><i class="fas fa-building"></i> Partner Companies</a></li>
+
+                <li class="menu-section-label">Recruitment Drives</li>
+                <li><a href="jobs.html"><i class="fas fa-briefcase"></i> Job Postings Review</a></li>
+                <li><a href="applications.html"><i class="fas fa-file-invoice"></i> All Applications</a></li>
+                <li><a href="interviews.html"><i class="fas fa-calendar-alt"></i> Interview Master</a></li>
+                <li><a href="placements.html"><i class="fas fa-trophy"></i> Placement Records</a></li>
+
+                <li class="menu-section-label">Academic Config</li>
+                <li><a href="departments.html"><i class="fas fa-sitemap"></i> Depts & Branches</a></li>
+                <li><a href="skills.html"><i class="fas fa-tags"></i> Skills Master</a></li>
+
+                <li class="menu-section-label">Analytics & Reports</li>
+                <li><a href="analytics.html"><i class="fas fa-chart-line"></i> Placement Analytics</a></li>
+                <li><a href="reports.html"><i class="fas fa-file-excel"></i> Reports & CSV Export</a></li>
+                <li><a href="notifications.html"><i class="fas fa-bell"></i> Notifications</a></li>
+                <li><a href="javascript:void(0)" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+
+            <div class="sidebar-footer">
+                <div class="user-brief">
+                    <div class="user-avatar" style="background: #c2410c;"><i class="fas fa-shield-alt"></i></div>
+                    <div class="user-meta">
+                        <div class="user-name admin-display-name">T&P Admin</div>
+                        <div class="user-email">admin@campusplacement.com</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="topbar">
+                <div class="page-title">
+                    <h1>Corporate Partners Directory</h1>
+                    <p>Manage partnering companies, campus visiting records, industry categories, and verification badges.</p>
+                </div>
+                <div class="topbar-actions">
+                    <button class="btn btn-primary btn-sm" onclick="openAddCompanyModal()">
+                        <i class="fas fa-plus"></i> Add Partner Company
+                    </button>
+                </div>
+            </header>
+
+            <div class="content-body">
+                <div class="card">
+                    <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
+                        <h3><i class="fas fa-building" style="color: var(--primary); margin-right: 0.5rem;"></i> Partner Employers</h3>
+                        <div style="width: 250px;">
+                            <input type="text" id="company-search" class="form-control" placeholder="Search companies..." oninput="filterCompanies()">
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Company</th>
+                                    <th>Industry</th>
+                                    <th>Location</th>
+                                    <th>Website</th>
+                                    <th>Recruiters</th>
+                                    <th>Total Drives</th>
+                                    <th>Campus Hires</th>
+                                    <th>Verified</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="companies-table-tbody">
+                                <tr><td colspan="9" class="empty-state">Loading companies...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add/Edit Company Modal -->
+    <div id="company-modal" class="modal-overlay">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3 id="company-modal-title">Add Partner Company</h3>
+                <button class="modal-close-btn" onclick="closeModal('company-modal')">&times;</button>
+            </div>
+            <form id="company-form" onsubmit="handleCompanySubmit(event)">
+                <input type="hidden" id="company-id" value="">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label">Company Name *</label>
+                        <input type="text" id="company-name" class="form-control" required placeholder="e.g. Google, Microsoft">
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label class="form-label">Industry Sector *</label>
+                            <input type="text" id="company-industry" class="form-control" required placeholder="e.g. Information Technology">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Headquarters / Location</label>
+                            <input type="text" id="company-location" class="form-control" placeholder="e.g. Bangalore, India">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Website URL</label>
+                        <input type="url" id="company-website" class="form-control" placeholder="https://company.com">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Brief Description</label>
+                        <textarea id="company-desc" class="form-control" rows="3" placeholder="Company profile overview..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                            <input type="checkbox" id="company-verified" checked>
+                            <span>Verified Campus Partner</span>
+                        </label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline btn-sm" onclick="closeModal('company-modal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary btn-sm" id="save-company-btn">Save Company</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/admin.js"></script>
+    <script>
+        let allCompanies = [];
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await initAdminView();
+            await loadCompanies();
+        });
+
+        async function loadCompanies() {
+            try {
+                const res = await apiRequest('admin/companies.php');
+                allCompanies = res.companies || [];
+                renderCompanies(allCompanies);
+            } catch (e) {
+                document.getElementById('companies-table-tbody').innerHTML = '<tr><td colspan="9">Failed to load companies.</td></tr>';
+            }
+        }
+
+        function renderCompanies(list) {
+            const tbody = document.getElementById('companies-table-tbody');
+            if (!tbody) return;
+
+            if (list.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="9" class="empty-state">No companies found.</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = list.map(c => `
+                <tr>
+                    <td><strong>${c.company_name}</strong></td>
+                    <td>${c.industry || 'Technology'}</td>
+                    <td>${c.location || 'N/A'}</td>
+                    <td>${c.website ? `<a href="${c.website}" target="_blank" style="color: var(--primary); text-decoration: underline;"><i class="fas fa-external-link-alt"></i> Visit</a>` : 'N/A'}</td>
+                    <td>${c.recruiter_count || 0}</td>
+                    <td>${c.total_jobs || 0}</td>
+                    <td><strong style="color: var(--success);">${c.total_hires || 0}</strong></td>
+                    <td><span class="status-pill ${c.is_verified ? 'status-live' : 'status-pending'}">${c.is_verified ? 'VERIFIED' : 'UNVERIFIED'}</span></td>
+                    <td>
+                        <button class="btn btn-outline btn-sm" onclick="editCompany(${c.company_id})">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function filterCompanies() {
+            const q = document.getElementById('company-search').value.toLowerCase();
+            const filtered = allCompanies.filter(c => c.company_name.toLowerCase().includes(q) || (c.industry && c.industry.toLowerCase().includes(q)));
+            renderCompanies(filtered);
+        }
+
+        function openAddCompanyModal() {
+            document.getElementById('company-form').reset();
+            document.getElementById('company-id').value = '';
+            document.getElementById('company-modal-title').textContent = 'Add Partner Company';
+            openModal('company-modal');
+        }
+
+        function editCompany(id) {
+            const c = allCompanies.find(x => x.company_id == id);
+            if (!c) return;
+
+            document.getElementById('company-id').value = c.company_id;
+            document.getElementById('company-name').value = c.company_name;
+            document.getElementById('company-industry').value = c.industry || '';
+            document.getElementById('company-location').value = c.location || '';
+            document.getElementById('company-website').value = c.website || '';
+            document.getElementById('company-desc').value = c.description || '';
+            document.getElementById('company-verified').checked = c.is_verified == 1;
+            document.getElementById('company-modal-title').textContent = 'Edit Company';
+            openModal('company-modal');
+        }
+
+        async function handleCompanySubmit(e) {
+            e.preventDefault();
+            const cid = document.getElementById('company-id').value;
+            const payload = {
+                company_id: cid || undefined,
+                company_name: document.getElementById('company-name').value.trim(),
+                industry: document.getElementById('company-industry').value.trim(),
+                location: document.getElementById('company-location').value.trim(),
+                website: document.getElementById('company-website').value.trim(),
+                description: document.getElementById('company-desc').value.trim(),
+                is_verified: document.getElementById('company-verified').checked ? 1 : 0
+            };
+
+            try {
+                const res = await apiRequest('admin/companies.php', {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+                showToast('success', 'Saved', res.message);
+                closeModal('company-modal');
+                await loadCompanies();
+            } catch (err) {
+                showToast('error', 'Error', err.message);
+            }
+        }
+    </script>
+</body>
+</html>

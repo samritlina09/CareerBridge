@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact - CareerBridge Placement & Training Cell</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/forms.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <nav class="navbar">
+                <a href="index.html" class="brand-logo">
+                    <div class="brand-icon"><i class="fas fa-graduation-cap"></i></div>
+                    <span>Career<span style="color: var(--primary);">Bridge</span></span>
+                </a>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="opportunities.html">Opportunities</a></li>
+                    <li><a href="companies.html">Companies</a></li>
+                    <li><a href="how-it-works.html">How It Works</a></li>
+                    <li><a href="contact.html" class="active">Contact</a></li>
+                </ul>
+                <div class="nav-actions">
+                    <a href="login.html" class="btn btn-outline btn-sm">Sign In</a>
+                    <a href="register.html" class="btn btn-primary btn-sm">Get Started</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container" style="padding: 4rem 1.5rem;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3.5rem; align-items: flex-start;">
+            <div>
+                <span class="badge badge-primary" style="margin-bottom: 0.5rem;">Placement Cell</span>
+                <h1 style="font-size: 2.25rem; font-weight: 800; color: var(--text-primary); margin-bottom: 1rem;">
+                    Get In Touch With T&P
+                </h1>
+                <p style="color: var(--text-secondary); line-height: 1.6; margin-bottom: 2rem;">
+                    For campus recruitment drives, company partnerships, or student inquiries, connect with our Training & Placement officers.
+                </p>
+
+                <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                    <div style="display: flex; gap: 1rem; align-items: center;">
+                        <div style="width: 44px; height: 44px; border-radius: 50%; background: #eff6ff; color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div>
+                            <strong>Training & Placement Office</strong>
+                            <div style="color: var(--text-secondary); font-size: 0.9rem;">Administrative Block, Room 204, University Campus</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 1rem; align-items: center;">
+                        <div style="width: 44px; height: 44px; border-radius: 50%; background: #eff6ff; color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div>
+                            <strong>Email Address</strong>
+                            <div style="color: var(--text-secondary); font-size: 0.9rem;">admin@campusplacement.com</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 1rem; align-items: center;">
+                        <div style="width: 44px; height: 44px; border-radius: 50%; background: #eff6ff; color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">
+                            <i class="fas fa-phone"></i>
+                        </div>
+                        <div>
+                            <strong>Helpline Desk</strong>
+                            <div style="color: var(--text-secondary); font-size: 0.9rem;">+91 11 2345 6789 (Mon-Fri, 9am-5pm)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card" style="padding: 2rem;">
+                <h3 style="font-weight: 700; margin-bottom: 1.25rem;">Send a Message</h3>
+                <form id="contact-form" onsubmit="event.preventDefault(); showToast('success', 'Message Received', 'Thank you for reaching out. The T&P cell will contact you shortly.'); this.reset();">
+                    <div class="form-group">
+                        <label class="form-label">Full Name</label>
+                        <input type="text" class="form-control" required placeholder="Your Name">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email Address</label>
+                        <input type="email" class="form-control" required placeholder="name@domain.com">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Subject</label>
+                        <input type="text" class="form-control" required placeholder="Recruitment Drive / General Inquiry">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Message</label>
+                        <textarea class="form-control" rows="4" required placeholder="Write your message..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">
+                        <i class="fas fa-paper-plane"></i> Send Message
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <footer class="site-footer">
+        <div class="container" style="text-align: center;">
+            &copy; 2026 CareerBridge. All rights reserved. Campus Placement & Internship Platform.
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

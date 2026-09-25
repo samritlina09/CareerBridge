@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Opportunities - CareerBridge Placement Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/tables.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <header class="site-header">
+        <div class="container">
+            <nav class="navbar">
+                <a href="index.html" class="brand-logo">
+                    <div class="brand-icon"><i class="fas fa-graduation-cap"></i></div>
+                    <span>Career<span style="color: var(--primary);">Bridge</span></span>
+                </a>
+                <ul class="nav-links">
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About</a></li>
+                    <li><a href="opportunities.html" class="active">Opportunities</a></li>
+                    <li><a href="companies.html">Companies</a></li>
+                    <li><a href="how-it-works.html">How It Works</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+                <div class="nav-actions">
+                    <a href="login.html" class="btn btn-outline btn-sm">Sign In</a>
+                    <a href="register.html" class="btn btn-primary btn-sm">Get Started</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <div class="container" style="padding: 3rem 1.5rem;">
+        <div style="margin-bottom: 2rem;">
+            <h1 style="font-size: 2.25rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0.5rem;">
+                Browse Campus Opportunities
+            </h1>
+            <p style="color: var(--text-secondary);">
+                Explore live internship openings and full-time graduate positions from top verified companies.
+            </p>
+        </div>
+
+        <!-- Filter Bar -->
+        <div class="filter-bar">
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="job-search-input" placeholder="Search by job title, company, or tech stack...">
+            </div>
+            <div class="filter-controls">
+                <select id="filter-job-type" class="filter-select">
+                    <option value="">All Job Types</option>
+                    <option value="FULL_TIME">Full-Time</option>
+                    <option value="INTERNSHIP">Internship</option>
+                </select>
+                <select id="filter-work-mode" class="filter-select">
+                    <option value="">All Work Modes</option>
+                    <option value="ON_SITE">On-site</option>
+                    <option value="HYBRID">Hybrid</option>
+                    <option value="REMOTE">Remote</option>
+                </select>
+                <button class="btn btn-primary btn-sm" onclick="loadJobCatalog(false)">
+                    <i class="fas fa-filter"></i> Apply Filters
+                </button>
+            </div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+            <span id="total-jobs-counter" class="badge badge-primary" style="font-size: 0.85rem;">Loading...</span>
+        </div>
+
+        <!-- Job Catalog List -->
+        <div id="jobs-catalog-container"></div>
+    </div>
+
+    <footer class="site-footer">
+        <div class="container" style="text-align: center;">
+            &copy; 2026 CareerBridge. All rights reserved. Campus Placement & Internship Platform.
+        </div>
+    </footer>
+
+    <script src="js/main.js"></script>
+    <script src="js/jobs.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            loadJobCatalog(false);
+            const input = document.getElementById('job-search-input');
+            if (input) {
+                input.addEventListener('keyup', (e) => {
+                    if (e.key === 'Enter') loadJobCatalog(false);
+                });
+            }
+        });
+    </script>
+</body>
+</html>

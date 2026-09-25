@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Departments & Branches - T&P Admin Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/tables.css">
+    <link rel="stylesheet" href="../css/forms.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+    <div class="dashboard-wrapper">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="brand-icon"><i class="fas fa-university"></i></div>
+                <div>
+                    <h2>CareerBridge</h2>
+                    <span class="sidebar-role-badge" style="background: #431407; color: #fdba74;">T&P ADMIN CELL</span>
+                </div>
+            </div>
+
+            <ul class="sidebar-menu">
+                <li class="menu-section-label">Overview</li>
+                <li><a href="dashboard.html"><i class="fas fa-th-large"></i> Admin Dashboard</a></li>
+
+                <li class="menu-section-label">User Management</li>
+                <li><a href="students.html"><i class="fas fa-user-graduate"></i> Students Directory</a></li>
+                <li><a href="recruiters.html"><i class="fas fa-user-tie"></i> Recruiters Approvals</a></li>
+                <li><a href="companies.html"><i class="fas fa-building"></i> Partner Companies</a></li>
+
+                <li class="menu-section-label">Recruitment Drives</li>
+                <li><a href="jobs.html"><i class="fas fa-briefcase"></i> Job Postings Review</a></li>
+                <li><a href="applications.html"><i class="fas fa-file-invoice"></i> All Applications</a></li>
+                <li><a href="interviews.html"><i class="fas fa-calendar-alt"></i> Interview Master</a></li>
+                <li><a href="placements.html"><i class="fas fa-trophy"></i> Placement Records</a></li>
+
+                <li class="menu-section-label">Academic Config</li>
+                <li><a href="departments.html" class="active"><i class="fas fa-sitemap"></i> Depts & Branches</a></li>
+                <li><a href="skills.html"><i class="fas fa-tags"></i> Skills Master</a></li>
+
+                <li class="menu-section-label">Analytics & Reports</li>
+                <li><a href="analytics.html"><i class="fas fa-chart-line"></i> Placement Analytics</a></li>
+                <li><a href="reports.html"><i class="fas fa-file-excel"></i> Reports & CSV Export</a></li>
+                <li><a href="notifications.html"><i class="fas fa-bell"></i> Notifications</a></li>
+                <li><a href="javascript:void(0)" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+
+            <div class="sidebar-footer">
+                <div class="user-brief">
+                    <div class="user-avatar" style="background: #c2410c;"><i class="fas fa-shield-alt"></i></div>
+                    <div class="user-meta">
+                        <div class="user-name admin-display-name">T&P Admin</div>
+                        <div class="user-email">admin@campusplacement.com</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="topbar">
+                <div class="page-title">
+                    <h1>Academic Departments & Branches Hierarchy</h1>
+                    <p>Manage college faculties, academic degree specializations, and departmental quotas.</p>
+                </div>
+                <div class="topbar-actions">
+                    <button class="btn btn-outline btn-sm" onclick="openAddDeptModal()">
+                        <i class="fas fa-plus"></i> New Department
+                    </button>
+                    <button class="btn btn-primary btn-sm" onclick="openAddBranchModal()">
+                        <i class="fas fa-plus"></i> New Branch
+                    </button>
+                </div>
+            </header>
+
+            <div class="content-body">
+                <!-- Departments Table -->
+                <div class="card" style="margin-bottom: 2rem;">
+                    <div class="card-header">
+                        <h3><i class="fas fa-building" style="color: var(--primary); margin-right: 0.5rem;"></i> Academic Departments</h3>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Department Name</th>
+                                    <th>Dept Code</th>
+                                    <th>Total Branches</th>
+                                    <th>Total Students</th>
+                                </tr>
+                            </thead>
+                            <tbody id="depts-tbody">
+                                <tr><td colspan="4" class="empty-state">Loading departments...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Branches Table -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-code-branch" style="color: var(--secondary); margin-right: 0.5rem;"></i> Branches & Specializations</h3>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Branch Name</th>
+                                    <th>Code</th>
+                                    <th>Parent Department</th>
+                                    <th>Degree Type</th>
+                                    <th>Enrolled Students</th>
+                                </tr>
+                            </thead>
+                            <tbody id="branches-tbody">
+                                <tr><td colspan="5" class="empty-state">Loading branches...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add Department Modal -->
+    <div id="dept-modal" class="modal-overlay">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3>Add Academic Department</h3>
+                <button class="modal-close-btn" onclick="closeModal('dept-modal')">&times;</button>
+            </div>
+            <form id="dept-form" onsubmit="handleDeptSubmit(event)">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label">Department Name *</label>
+                        <input type="text" id="dept-name" class="form-control" required placeholder="e.g. Computer Science & Engineering">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Department Code *</label>
+                        <input type="text" id="dept-code" class="form-control" required placeholder="e.g. CSE" style="text-transform: uppercase;">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline btn-sm" onclick="closeModal('dept-modal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary btn-sm">Create Department</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Branch Modal -->
+    <div id="branch-modal" class="modal-overlay">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3>Add Academic Branch</h3>
+                <button class="modal-close-btn" onclick="closeModal('branch-modal')">&times;</button>
+            </div>
+            <form id="branch-form" onsubmit="handleBranchSubmit(event)">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label">Parent Department *</label>
+                        <select id="branch-parent-dept" class="form-control" required>
+                            <!-- Dynamically populated -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Branch Name *</label>
+                        <input type="text" id="branch-name" class="form-control" required placeholder="e.g. Artificial Intelligence & Data Science">
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                        <div class="form-group">
+                            <label class="form-label">Branch Code *</label>
+                            <input type="text" id="branch-code" class="form-control" required placeholder="e.g. AI-DS" style="text-transform: uppercase;">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Degree Type *</label>
+                            <select id="branch-degree" class="form-control" required>
+                                <option value="B.Tech">B.Tech</option>
+                                <option value="M.Tech">M.Tech</option>
+                                <option value="MCA">MCA</option>
+                                <option value="MBA">MBA</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline btn-sm" onclick="closeModal('branch-modal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary btn-sm">Create Branch</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/admin.js"></script>
+    <script>
+        let cachedDepts = [];
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            await initAdminView();
+            await loadAcademicStructure();
+        });
+
+        async function loadAcademicStructure() {
+            try {
+                const res = await apiRequest('admin/departments.php');
+                cachedDepts = res.departments || [];
+                const branches = res.branches || [];
+
+                // Render Depts
+                const dtbody = document.getElementById('depts-tbody');
+                if (dtbody) {
+                    dtbody.innerHTML = cachedDepts.map(d => `
+                        <tr>
+                            <td><strong>${d.dept_name}</strong></td>
+                            <td><span class="badge badge-primary">${d.dept_code}</span></td>
+                            <td>${d.total_branches} branches</td>
+                            <td>${d.total_students} students</td>
+                        </tr>
+                    `).join('');
+                }
+
+                // Render Branches
+                const btbody = document.getElementById('branches-tbody');
+                if (btbody) {
+                    btbody.innerHTML = branches.map(b => `
+                        <tr>
+                            <td><strong>${b.branch_name}</strong></td>
+                            <td><span class="badge badge-primary">${b.branch_code}</span></td>
+                            <td>${b.dept_name} (${b.dept_code})</td>
+                            <td>${b.degree_type || 'B.Tech'}</td>
+                            <td>${b.student_count || 0} enrolled</td>
+                        </tr>
+                    `).join('');
+                }
+
+                // Populate Depts dropdown in branch modal
+                const deptSelect = document.getElementById('branch-parent-dept');
+                if (deptSelect) {
+                    deptSelect.innerHTML = cachedDepts.map(d => `<option value="${d.dept_id}">${d.dept_name} (${d.dept_code})</option>`).join('');
+                }
+
+            } catch (err) {
+                console.error(err);
+                showToast('error', 'Error', 'Failed to load academic structure.');
+            }
+        }
+
+        function openAddDeptModal() {
+            document.getElementById('dept-form').reset();
+            openModal('dept-modal');
+        }
+
+        function openAddBranchModal() {
+            document.getElementById('branch-form').reset();
+            openModal('branch-modal');
+        }
+
+        async function handleDeptSubmit(e) {
+            e.preventDefault();
+            const payload = {
+                type: 'department',
+                dept_name: document.getElementById('dept-name').value.trim(),
+                dept_code: document.getElementById('dept-code').value.trim()
+            };
+            try {
+                const res = await apiRequest('admin/departments.php', {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+                showToast('success', 'Created', res.message);
+                closeModal('dept-modal');
+                await loadAcademicStructure();
+            } catch (err) {
+                showToast('error', 'Error', err.message);
+            }
+        }
+
+        async function handleBranchSubmit(e) {
+            e.preventDefault();
+            const payload = {
+                type: 'branch',
+                dept_id: document.getElementById('branch-parent-dept').value,
+                branch_name: document.getElementById('branch-name').value.trim(),
+                branch_code: document.getElementById('branch-code').value.trim(),
+                degree_type: document.getElementById('branch-degree').value
+            };
+            try {
+                const res = await apiRequest('admin/departments.php', {
+                    method: 'POST',
+                    body: JSON.stringify(payload)
+                });
+                showToast('success', 'Created', res.message);
+                closeModal('branch-modal');
+                await loadAcademicStructure();
+            } catch (err) {
+                showToast('error', 'Error', err.message);
+            }
+        }
+    </script>
+</body>
+</html>

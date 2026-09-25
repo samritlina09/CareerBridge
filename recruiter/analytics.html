@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hiring Analytics - Recruiter Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/tables.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="dashboard-wrapper">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="brand-icon"><i class="fas fa-building"></i></div>
+                <div>
+                    <h2>CareerBridge</h2>
+                    <span class="sidebar-role-badge" style="background: #14532d; color: #86efac;">RECRUITER PORTAL</span>
+                </div>
+            </div>
+
+            <ul class="sidebar-menu">
+                <li class="menu-section-label">Overview</li>
+                <li><a href="dashboard.html"><i class="fas fa-th-large"></i> Dashboard</a></li>
+                <li><a href="profile.html"><i class="fas fa-id-card"></i> Company Profile</a></li>
+                
+                <li class="menu-section-label">Job Postings</li>
+                <li><a href="post-job.html"><i class="fas fa-plus-circle"></i> Post New Job</a></li>
+                <li><a href="manage-jobs.html"><i class="fas fa-briefcase"></i> Manage Jobs</a></li>
+
+                <li class="menu-section-label">Candidates Pipeline</li>
+                <li><a href="applicants.html"><i class="fas fa-users"></i> All Applicants</a></li>
+                <li><a href="shortlisted.html"><i class="fas fa-star"></i> Shortlisted</a></li>
+                <li><a href="interviews.html"><i class="fas fa-calendar-check"></i> Interviews</a></li>
+                <li><a href="selected-candidates.html"><i class="fas fa-user-check"></i> Selected Hires</a></li>
+
+                <li class="menu-section-label">Performance</li>
+                <li><a href="analytics.html" class="active"><i class="fas fa-chart-bar"></i> Hiring Analytics</a></li>
+                <li><a href="notifications.html"><i class="fas fa-bell"></i> Notifications</a></li>
+                <li><a href="javascript:void(0)" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+
+            <div class="sidebar-footer">
+                <div class="user-brief">
+                    <div class="user-avatar" style="background: #059669;"><i class="fas fa-user-tie"></i></div>
+                    <div class="user-meta">
+                        <div class="user-name recruiter-display-name">Recruiter User</div>
+                        <div class="user-email">Corporate Partner</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="topbar">
+                <div class="page-title">
+                    <h1>Hiring Pipeline Analytics</h1>
+                    <p>Real-time metrics on candidate attraction, interview funnel, and hiring conversions.</p>
+                </div>
+                <div class="topbar-actions">
+                    <button class="btn btn-outline btn-sm" onclick="loadRecruiterAnalytics()">
+                        <i class="fas fa-sync-alt"></i> Refresh Data
+                    </button>
+                </div>
+            </header>
+
+            <div class="content-body">
+                <!-- KPI Grid -->
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-info">
+                            <h3>Total Candidates</h3>
+                            <div class="kpi-value" id="kpi-rec-total-apps">0</div>
+                            <div class="kpi-sub">Total applications</div>
+                        </div>
+                        <div class="kpi-icon blue"><i class="fas fa-file-invoice"></i></div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-info">
+                            <h3>Shortlist Ratio</h3>
+                            <div class="kpi-value" id="kpi-rec-shortlist-ratio">0%</div>
+                            <div class="kpi-sub">Applications screened</div>
+                        </div>
+                        <div class="kpi-icon amber"><i class="fas fa-filter"></i></div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-info">
+                            <h3>Interview Conversion</h3>
+                            <div class="kpi-value" id="kpi-rec-interview-ratio">0%</div>
+                            <div class="kpi-sub">Shortlist to interview</div>
+                        </div>
+                        <div class="kpi-icon purple"><i class="fas fa-calendar-check"></i></div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-info">
+                            <h3>Final Selections</h3>
+                            <div class="kpi-value" id="kpi-rec-total-hires">0</div>
+                            <div class="kpi-sub">Offers extended</div>
+                        </div>
+                        <div class="kpi-icon green"><i class="fas fa-trophy"></i></div>
+                    </div>
+                </div>
+
+                <!-- Charts Section -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 1.5rem; margin-bottom: 2rem;">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-funnel-dollar" style="color: var(--primary); margin-right: 0.5rem;"></i> Recruitment Funnel</h3>
+                        </div>
+                        <div class="card-body" style="height: 320px; position: relative;">
+                            <canvas id="chart-rec-funnel"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-chart-pie" style="color: var(--success); margin-right: 0.5rem;"></i> Applications by Job Listing</h3>
+                        </div>
+                        <div class="card-body" style="height: 320px; position: relative;">
+                            <canvas id="chart-rec-jobs"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Job Performance Breakdown Table -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3><i class="fas fa-table" style="color: var(--primary); margin-right: 0.5rem;"></i> Job Postings Performance Matrix</h3>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Job Title</th>
+                                    <th>Type</th>
+                                    <th>Salary / Stipend</th>
+                                    <th>Status</th>
+                                    <th>Applications</th>
+                                    <th>Shortlisted</th>
+                                    <th>Hires</th>
+                                    <th>Conversion %</th>
+                                </tr>
+                            </thead>
+                            <tbody id="rec-jobs-matrix-tbody">
+                                <tr><td colspan="8" class="empty-state">Loading job analytics...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/recruiter.js"></script>
+    <script>
+        let funnelChart = null;
+        let jobsChart = null;
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const authed = await initRecruiterView();
+            if (!authed) return;
+            await loadRecruiterAnalytics();
+        });
+
+        async function loadRecruiterAnalytics() {
+            try {
+                const stats = await apiRequest('analytics/dashboard_stats.php');
+                const r = stats.role_specific || {};
+                const jobsRes = await apiRequest('recruiter/jobs.php');
+                const jobs = jobsRes.jobs || [];
+
+                const totalApps = r.total_applicants || 0;
+                const shortlisted = r.shortlisted || 0;
+                const interviews = r.interviews || 0;
+                const selected = r.selected_hires || 0;
+
+                document.getElementById('kpi-rec-total-apps').textContent = totalApps;
+                document.getElementById('kpi-rec-shortlist-ratio').textContent = totalApps > 0 ? `${((shortlisted / totalApps) * 100).toFixed(1)}%` : '0%';
+                document.getElementById('kpi-rec-interview-ratio').textContent = shortlisted > 0 ? `${((interviews / shortlisted) * 100).toFixed(1)}%` : '0%';
+                document.getElementById('kpi-rec-total-hires').textContent = selected;
+
+                // Render Funnel Chart
+                const funnelCtx = document.getElementById('chart-rec-funnel');
+                if (funnelCtx) {
+                    if (funnelChart) funnelChart.destroy();
+                    funnelChart = new Chart(funnelCtx, {
+                        type: 'bar',
+                        data: {
+                            labels: ['Total Applied', 'Shortlisted', 'Interviewed', 'Selected Hires'],
+                            datasets: [{
+                                label: 'Candidate Count',
+                                data: [totalApps, shortlisted, interviews, selected],
+                                backgroundColor: [
+                                    'rgba(59, 130, 246, 0.85)',
+                                    'rgba(245, 158, 11, 0.85)',
+                                    'rgba(139, 92, 246, 0.85)',
+                                    'rgba(16, 185, 129, 0.85)'
+                                ],
+                                borderRadius: 6
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: { display: false }
+                            },
+                            scales: {
+                                y: { beginAtZero: true }
+                            }
+                        }
+                    });
+                }
+
+                // Render Jobs Distribution Chart
+                const jobsCtx = document.getElementById('chart-rec-jobs');
+                if (jobsCtx && jobs.length > 0) {
+                    if (jobsChart) jobsChart.destroy();
+                    jobsChart = new Chart(jobsCtx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: jobs.map(j => j.title),
+                            datasets: [{
+                                data: jobs.map(j => parseInt(j.total_applicants || 0)),
+                                backgroundColor: [
+                                    '#2563eb', '#10b981', '#f59e0b', '#8b5cf6', '#ec4899', '#06b6d4', '#84cc16'
+                                ]
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: { position: 'bottom' }
+                            }
+                        }
+                    });
+                }
+
+                // Populate Jobs Matrix Table
+                const tbody = document.getElementById('rec-jobs-matrix-tbody');
+                if (tbody) {
+                    if (jobs.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="8" class="empty-state">No job listings found.</td></tr>';
+                        return;
+                    }
+
+                    tbody.innerHTML = jobs.map(j => {
+                        const appCount = parseInt(j.total_applicants || 0);
+                        const selCount = parseInt(j.selected_count || 0);
+                        const conv = appCount > 0 ? ((selCount / appCount) * 100).toFixed(1) : 0;
+                        return `
+                            <tr>
+                                <td><strong>${j.title}</strong></td>
+                                <td><span class="badge badge-primary">${j.job_type}</span></td>
+                                <td>${formatCurrency(j.salary_stipend)}</td>
+                                <td><span class="status-pill status-${j.status.toLowerCase()}">${j.status}</span></td>
+                                <td><strong>${appCount}</strong></td>
+                                <td>${j.shortlisted_count || 0}</td>
+                                <td><strong style="color: var(--success);">${selCount}</strong></td>
+                                <td><strong>${conv}%</strong></td>
+                            </tr>
+                        `;
+                    }).join('');
+                }
+
+            } catch (err) {
+                console.error(err);
+                showToast('error', 'Analytics Error', err.message);
+            }
+        }
+    </script>
+</body>
+</html>

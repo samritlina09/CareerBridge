@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Interviews - Recruiter Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/tables.css">
+    <link rel="stylesheet" href="../css/forms.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+    <div class="dashboard-wrapper">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="brand-icon"><i class="fas fa-building"></i></div>
+                <div>
+                    <h2>CareerBridge</h2>
+                    <span class="sidebar-role-badge" style="background: #14532d; color: #86efac;">RECRUITER PORTAL</span>
+                </div>
+            </div>
+
+            <ul class="sidebar-menu">
+                <li class="menu-section-label">Overview</li>
+                <li><a href="dashboard.html"><i class="fas fa-th-large"></i> Dashboard</a></li>
+                <li><a href="profile.html"><i class="fas fa-id-card"></i> Company Profile</a></li>
+                
+                <li class="menu-section-label">Job Postings</li>
+                <li><a href="post-job.html"><i class="fas fa-plus-circle"></i> Post New Job</a></li>
+                <li><a href="manage-jobs.html"><i class="fas fa-briefcase"></i> Manage Jobs</a></li>
+
+                <li class="menu-section-label">Candidates Pipeline</li>
+                <li><a href="applicants.html"><i class="fas fa-users"></i> All Applicants</a></li>
+                <li><a href="shortlisted.html"><i class="fas fa-star"></i> Shortlisted</a></li>
+                <li><a href="interviews.html" class="active"><i class="fas fa-calendar-check"></i> Interviews</a></li>
+                <li><a href="selected-candidates.html"><i class="fas fa-user-check"></i> Selected Hires</a></li>
+
+                <li class="menu-section-label">Performance</li>
+                <li><a href="analytics.html"><i class="fas fa-chart-bar"></i> Hiring Analytics</a></li>
+                <li><a href="notifications.html"><i class="fas fa-bell"></i> Notifications</a></li>
+                <li><a href="javascript:void(0)" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+
+            <div class="sidebar-footer">
+                <div class="user-brief">
+                    <div class="user-avatar" style="background: #059669;"><i class="fas fa-user-tie"></i></div>
+                    <div class="user-meta">
+                        <div class="user-name recruiter-display-name">Recruiter User</div>
+                        <div class="user-email">Corporate Partner</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="topbar">
+                <div class="page-title">
+                    <h1>Scheduled Interviews & Evaluations</h1>
+                    <p>Conduct rounds, update pass/fail results, and log interviewer feedback.</p>
+                </div>
+            </header>
+
+            <div class="content-body">
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Candidate</th>
+                                <th>Position</th>
+                                <th>Round</th>
+                                <th>Date & Time</th>
+                                <th>Meeting Venue/Link</th>
+                                <th>Status</th>
+                                <th>Result</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="interviews-tbody">
+                            <tr><td colspan="8" style="text-align: center; padding: 2rem;">Loading interviews...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Update Result Modal -->
+    <div id="update-result-modal" class="modal-overlay">
+        <div class="modal-dialog">
+            <div class="modal-header">
+                <h3>Update Interview Result & Feedback</h3>
+                <button class="modal-close" onclick="closeModal('update-result-modal')">&times;</button>
+            </div>
+            <form onsubmit="handleResultSubmit(event)">
+                <input type="hidden" id="res-interview-id">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="form-label">Interview Status</label>
+                        <select id="res-status" class="form-control">
+                            <option value="COMPLETED">Completed</option>
+                            <option value="SCHEDULED">Scheduled</option>
+                            <option value="CANCELLED">Cancelled</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Evaluation Result</label>
+                        <select id="res-result" class="form-control">
+                            <option value="PASSED">Passed</option>
+                            <option value="FAILED">Failed</option>
+                            <option value="PENDING">Pending Decision</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Interviewer Feedback / Assessment Notes</label>
+                        <textarea id="res-feedback" class="form-control" rows="4" placeholder="Log technical strengths, problem solving ability, areas for improvement..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="closeModal('update-result-modal')">Cancel</button>
+                    <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Feedback</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/recruiter.js"></script>
+    <script>
+        async function loadInterviewsTable() {
+            const tbody = document.getElementById('interviews-tbody');
+            try {
+                const res = await apiRequest('recruiter/interviews.php');
+                const interviews = res.interviews || [];
+
+                if (interviews.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="8" class="empty-state">No interviews scheduled yet.</td></tr>';
+                    return;
+                }
+
+                tbody.innerHTML = interviews.map(i => `
+                    <tr>
+                        <td><strong>${i.student_name}</strong><br><small style="color: var(--text-muted);">${i.roll_number}</small></td>
+                        <td>${i.job_title}</td>
+                        <td><strong>${i.round_name}</strong></td>
+                        <td>${formatDate(i.scheduled_at)}</td>
+                        <td><small>${i.meeting_link_location}</small></td>
+                        <td><span class="status-pill status-${i.status.toLowerCase()}">${i.status}</span></td>
+                        <td><span class="badge ${i.result === 'PASSED' ? 'badge-success' : (i.result === 'FAILED' ? 'badge-danger' : 'badge-warning')}">${i.result}</span></td>
+                        <td>
+                            <button class="btn btn-outline btn-sm" onclick="openResultModal(${i.interview_id}, '${i.status}', '${i.result}', '${(i.interviewer_feedback || '').replace(/'/g, "\\'")}')">
+                                <i class="fas fa-edit"></i> Result
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                tbody.innerHTML = `<tr><td colspan="8">${err.message}</td></tr>`;
+            }
+        }
+
+        function openResultModal(interviewId, status, result, feedback) {
+            document.getElementById('res-interview-id').value = interviewId;
+            document.getElementById('res-status').value = status;
+            document.getElementById('res-result').value = result;
+            document.getElementById('res-feedback').value = feedback;
+            openModal('update-result-modal');
+        }
+
+        async function handleResultSubmit(e) {
+            e.preventDefault();
+            const payload = {
+                action: 'update_result',
+                interview_id: document.getElementById('res-interview-id').value,
+                status: document.getElementById('res-status').value,
+                result: document.getElementById('res-result').value,
+                interviewer_feedback: document.getElementById('res-feedback').value.trim()
+            };
+
+            try {
+                const res = await apiRequest('recruiter/interviews.php', { method: 'POST', body: JSON.stringify(payload) });
+                showToast('success', 'Updated', res.message);
+                closeModal('update-result-modal');
+                loadInterviewsTable();
+            } catch (err) {
+                showToast('error', 'Update Failed', err.message);
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const authed = await initRecruiterView();
+            if (!authed) return;
+            loadInterviewsTable();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Details - Student Placement Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/tables.css">
+    <link rel="stylesheet" href="../css/forms.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+    <div class="dashboard-wrapper">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="brand-icon"><i class="fas fa-graduation-cap"></i></div>
+                <div>
+                    <h2>CareerBridge</h2>
+                    <span class="sidebar-role-badge">STUDENT PORTAL</span>
+                </div>
+            </div>
+
+            <ul class="sidebar-menu">
+                <li class="menu-section-label">Overview</li>
+                <li><a href="dashboard.html"><i class="fas fa-th-large"></i> Dashboard</a></li>
+                <li><a href="profile.html"><i class="fas fa-user-circle"></i> My Profile</a></li>
+                
+                <li class="menu-section-label">Academic Portfolio</li>
+                <li><a href="education.html"><i class="fas fa-university"></i> Education</a></li>
+                <li><a href="skills.html"><i class="fas fa-code"></i> Skills</a></li>
+                <li><a href="projects.html"><i class="fas fa-project-diagram"></i> Projects</a></li>
+                <li><a href="certifications.html"><i class="fas fa-award"></i> Certifications</a></li>
+                <li><a href="resume.html"><i class="fas fa-file-alt"></i> Resume</a></li>
+
+                <li class="menu-section-label">Recruitment</li>
+                <li><a href="jobs.html" class="active"><i class="fas fa-briefcase"></i> Browse Jobs</a></li>
+                <li><a href="recommendations.html"><i class="fas fa-briefcase"></i> Recommended Jobs</a></li>
+                <li><a href="applications.html"><i class="fas fa-paper-plane"></i> My Applications</a></li>
+                <li><a href="interviews.html"><i class="fas fa-calendar-alt"></i> Interviews</a></li>
+                <li><a href="placement.html"><i class="fas fa-trophy"></i> Placement Status</a></li>
+
+                <li class="menu-section-label">Account</li>
+                <li><a href="notifications.html"><i class="fas fa-bell"></i> Notifications</a></li>
+                <li><a href="javascript:void(0)" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+
+            <div class="sidebar-footer">
+                <div class="user-brief">
+                    <div class="user-avatar"><i class="fas fa-user"></i></div>
+                    <div class="user-meta">
+                        <div class="user-name student-display-name">Student User</div>
+                        <div class="user-email student-display-email">student@campus.edu</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="topbar">
+                <div class="page-title">
+                    <a href="jobs.html" style="font-size: 0.85rem; color: var(--text-muted); display: inline-flex; align-items: center; gap: 0.35rem; margin-bottom: 0.25rem;">
+                        <i class="fas fa-arrow-left"></i> Back to Opportunities
+                    </a>
+                    <h1 id="job-detail-title">Loading Job Details...</h1>
+                </div>
+                <div class="topbar-actions">
+                    <button id="job-detail-apply-btn" class="btn btn-primary" disabled>
+                        <i class="fas fa-paper-plane"></i> Apply Now
+                    </button>
+                </div>
+            </header>
+
+            <div class="content-body" style="max-width: 950px;">
+                <!-- Eligibility Status Banner -->
+                <div id="job-eligibility-banner" style="margin-bottom: 1.5rem;"></div>
+
+                <!-- Job Specs Card -->
+                <div class="card" style="margin-bottom: 2rem;">
+                    <div class="card-body">
+                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; border-bottom: 1px solid #f1f5f9; padding-bottom: 1.25rem; margin-bottom: 1.5rem;">
+                            <div>
+                                <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Company</span>
+                                <h4 id="job-detail-company" style="font-weight: 700; color: var(--primary);">--</h4>
+                            </div>
+                            <div>
+                                <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Compensation</span>
+                                <h4 id="job-detail-salary" style="font-weight: 700; color: var(--success);">--</h4>
+                            </div>
+                            <div>
+                                <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Location & Mode</span>
+                                <h4 id="job-detail-location" style="font-weight: 600;">--</h4>
+                            </div>
+                            <div>
+                                <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Deadline</span>
+                                <h4 id="job-detail-deadline" style="font-weight: 600; color: var(--danger);">--</h4>
+                            </div>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; margin-bottom: 1.5rem;">
+                            <div>
+                                <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Employment Type</span>
+                                <div id="job-detail-type" style="font-weight: 600;">--</div>
+                            </div>
+                            <div>
+                                <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Minimum CGPA</span>
+                                <div id="job-detail-min-cgpa" style="font-weight: 600;">--</div>
+                            </div>
+                            <div>
+                                <span style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Openings</span>
+                                <div id="job-detail-openings" style="font-weight: 600;">--</div>
+                            </div>
+                        </div>
+
+                        <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.75rem;">Role Overview & Description</h3>
+                        <p id="job-detail-desc" style="color: var(--text-secondary); line-height: 1.7; white-space: pre-line; margin-bottom: 2rem;">
+                            Loading description...
+                        </p>
+
+                        <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.75rem;">Required Technical Competencies</h3>
+                        <div id="job-detail-skills" class="tag-chips" style="margin-bottom: 2rem;"></div>
+
+                        <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 0.75rem;">Eligible Branches</h3>
+                        <div id="job-detail-branches" style="display: flex; gap: 0.5rem; flex-wrap: wrap;"></div>
+                    </div>
+                </div>
+
+                <!-- Company Details Card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 style="font-weight: 700; font-size: 1.05rem;">About the Hiring Company</h3>
+                    </div>
+                    <div class="card-body">
+                        <p id="job-detail-company-desc" style="color: var(--text-secondary); line-height: 1.6; margin-bottom: 1rem;"></p>
+                        <div style="font-size: 0.85rem;">
+                            <strong>Official Website:</strong> <a id="job-detail-company-website" href="#" target="_blank">--</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/jobs.js"></script>
+    <script src="../js/student.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const authed = await initStudentView();
+            if (!authed) return;
+            loadJobDetailsPage();
+        });
+    </script>
+</body>
+</html>

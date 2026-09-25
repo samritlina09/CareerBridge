@@ -1,0 +1,164 @@
+/* ====================================================================
+   AUTHENTICATION PAGES (LOGIN, REGISTER, FORGOT PASSWORD)
+   ==================================================================== */
+
+.auth-page {
+    min-height: 100vh;
+    display: flex;
+    background: #f8fafc;
+}
+
+.auth-split-layout {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+}
+
+.auth-brand-side {
+    flex: 1;
+    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #1e3a8a 100%);
+    color: #fff;
+    padding: 4rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+}
+
+.auth-brand-side::before {
+    content: '';
+    position: absolute;
+    top: -100px;
+    right: -100px;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgba(59, 130, 246, 0.25) 0%, rgba(0, 0, 0, 0) 70%);
+    border-radius: 50%;
+}
+
+.auth-brand-content {
+    max-width: 480px;
+    position: relative;
+    z-index: 10;
+}
+.auth-brand-content h1 {
+    font-size: 2.25rem;
+    font-weight: 800;
+    line-height: 1.25;
+    margin-bottom: 1rem;
+    background: linear-gradient(to right, #fff, #93c5fd);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+.auth-brand-content p {
+    color: #94a3b8;
+    font-size: 1.05rem;
+    line-height: 1.6;
+    margin-bottom: 2rem;
+}
+
+.auth-feature-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+.auth-feature-item {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: #e2e8f0;
+    font-size: 0.95rem;
+}
+.auth-feature-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #60a5fa;
+    flex-shrink: 0;
+}
+
+.auth-form-side {
+    width: 540px;
+    background: #fff;
+    padding: 4rem 3.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    box-shadow: -5px 0 25px rgba(0, 0, 0, 0.05);
+}
+
+.auth-form-header {
+    margin-bottom: 2rem;
+}
+.auth-form-header h2 {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 0.5rem;
+}
+.auth-form-header p {
+    color: var(--text-muted);
+    font-size: 0.925rem;
+}
+
+.demo-credentials-box {
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: var(--radius-md);
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.85rem;
+}
+.demo-credentials-box h4 {
+    color: #1e40af;
+    font-size: 0.825rem;
+    font-weight: 700;
+    margin-bottom: 0.4rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+.demo-cred-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.2rem;
+    color: #1e3a8a;
+}
+.quick-fill-btn {
+    background: transparent;
+    border: none;
+    color: var(--primary);
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: underline;
+    font-size: 0.775rem;
+}
+
+.auth-toggle-role {
+    display: flex;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+    margin-bottom: 1.5rem;
+}
+.role-btn {
+    flex: 1;
+    padding: 0.65rem;
+    background: #f8fafc;
+    border: none;
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.role-btn.active {
+    background: var(--primary);
+    color: #fff;
+}

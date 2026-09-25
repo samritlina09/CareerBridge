@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recruiter Dashboard - Placement Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/tables.css">
+    <link rel="stylesheet" href="../css/forms.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+    <div class="dashboard-wrapper">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="brand-icon"><i class="fas fa-building"></i></div>
+                <div>
+                    <h2>CareerBridge</h2>
+                    <span class="sidebar-role-badge" style="background: #14532d; color: #86efac;">RECRUITER PORTAL</span>
+                </div>
+            </div>
+
+            <ul class="sidebar-menu">
+                <li class="menu-section-label">Overview</li>
+                <li><a href="dashboard.html" class="active"><i class="fas fa-th-large"></i> Dashboard</a></li>
+                <li><a href="profile.html"><i class="fas fa-id-card"></i> Company Profile</a></li>
+                
+                <li class="menu-section-label">Job Postings</li>
+                <li><a href="post-job.html"><i class="fas fa-plus-circle"></i> Post New Job</a></li>
+                <li><a href="manage-jobs.html"><i class="fas fa-briefcase"></i> Manage Jobs</a></li>
+
+                <li class="menu-section-label">Candidates Pipeline</li>
+                <li><a href="applicants.html"><i class="fas fa-users"></i> All Applicants</a></li>
+                <li><a href="shortlisted.html"><i class="fas fa-star"></i> Shortlisted</a></li>
+                <li><a href="interviews.html"><i class="fas fa-calendar-check"></i> Interviews</a></li>
+                <li><a href="selected-candidates.html"><i class="fas fa-user-check"></i> Selected Hires</a></li>
+
+                <li class="menu-section-label">Performance</li>
+                <li><a href="analytics.html"><i class="fas fa-chart-bar"></i> Hiring Analytics</a></li>
+                <li><a href="notifications.html"><i class="fas fa-bell"></i> Notifications</a></li>
+                <li><a href="javascript:void(0)" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+
+            <div class="sidebar-footer">
+                <div class="user-brief">
+                    <div class="user-avatar" style="background: #059669;"><i class="fas fa-user-tie"></i></div>
+                    <div class="user-meta">
+                        <div class="user-name recruiter-display-name">Recruiter User</div>
+                        <div class="user-email">Corporate Partner</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="topbar">
+                <div class="page-title">
+                    <h1>Recruiter Command Center</h1>
+                    <p>Screen applicants, schedule technical rounds, and extend official campus offers.</p>
+                </div>
+                <div class="topbar-actions" id="recruiter-topbar-actions">
+                    <a href="post-job.html" id="recruiter-topbar-post-btn" class="btn btn-primary btn-sm">
+                        <i class="fas fa-plus"></i> Post Opportunity
+                    </a>
+                </div>
+            </header>
+
+            <div class="content-body">
+                <!-- Recruiter Verification Alert Container -->
+                <div id="recruiter-status-alert"></div>
+
+                <!-- KPI Cards -->
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-info">
+                            <h3>Active Postings</h3>
+                            <div class="kpi-value" id="kpi-active-jobs">0</div>
+                            <div class="kpi-sub">Live vacancies</div>
+                        </div>
+                        <div class="kpi-icon blue"><i class="fas fa-briefcase"></i></div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-info">
+                            <h3>Total Applicants</h3>
+                            <div class="kpi-value" id="kpi-total-applicants">0</div>
+                            <div class="kpi-sub">Applications received</div>
+                        </div>
+                        <div class="kpi-icon purple"><i class="fas fa-users"></i></div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-info">
+                            <h3>Shortlisted</h3>
+                            <div class="kpi-value" id="kpi-shortlisted-candidates">0</div>
+                            <div class="kpi-sub">In evaluation pipeline</div>
+                        </div>
+                        <div class="kpi-icon amber"><i class="fas fa-filter"></i></div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-info">
+                            <h3>Interviews</h3>
+                            <div class="kpi-value" id="kpi-scheduled-interviews">0</div>
+                            <div class="kpi-sub">Scheduled rounds</div>
+                        </div>
+                        <div class="kpi-icon rose"><i class="fas fa-calendar-alt"></i></div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-info">
+                            <h3>Selected Hires</h3>
+                            <div class="kpi-value" id="kpi-selected-hires">0</div>
+                            <div class="kpi-sub">Confirmed placements</div>
+                        </div>
+                        <div class="kpi-icon green"><i class="fas fa-award"></i></div>
+                    </div>
+                </div>
+
+                <!-- Recent Jobs Overview -->
+                <div style="margin-top: 2rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h3 style="font-size: 1.15rem; font-weight: 700;">Recent Job Postings & Applicant Volume</h3>
+                        <a href="manage-jobs.html" class="btn btn-outline btn-sm">All Postings</a>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Job Title</th>
+                                    <th>Type</th>
+                                    <th>Compensation</th>
+                                    <th>Status</th>
+                                    <th>Applicant Count</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dash-recruiter-jobs-tbody">
+                                <tr><td colspan="5" style="text-align: center; padding: 2rem;">Loading jobs...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/recruiter.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const authed = await initRecruiterView();
+            if (!authed) return;
+            loadRecruiterDashboard();
+        });
+    </script>
+</body>
+</html>

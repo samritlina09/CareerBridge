@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Placement Status - Student Portal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/forms.css">
+    <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+    <div class="dashboard-wrapper">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="brand-icon"><i class="fas fa-graduation-cap"></i></div>
+                <div>
+                    <h2>CareerBridge</h2>
+                    <span class="sidebar-role-badge">STUDENT PORTAL</span>
+                </div>
+            </div>
+
+            <ul class="sidebar-menu">
+                <li class="menu-section-label">Overview</li>
+                <li><a href="dashboard.html"><i class="fas fa-th-large"></i> Dashboard</a></li>
+                <li><a href="profile.html"><i class="fas fa-user-circle"></i> My Profile</a></li>
+                
+                <li class="menu-section-label">Academic Portfolio</li>
+                <li><a href="education.html"><i class="fas fa-university"></i> Education</a></li>
+                <li><a href="skills.html"><i class="fas fa-code"></i> Skills</a></li>
+                <li><a href="projects.html"><i class="fas fa-project-diagram"></i> Projects</a></li>
+                <li><a href="certifications.html"><i class="fas fa-award"></i> Certifications</a></li>
+                <li><a href="resume.html"><i class="fas fa-file-alt"></i> Resume</a></li>
+
+                <li class="menu-section-label">Recruitment</li>
+                <li><a href="jobs.html"><i class="fas fa-briefcase"></i> Browse Jobs</a></li>
+                <li><a href="recommendations.html"><i class="fas fa-briefcase"></i> Recommended Jobs</a></li>
+                <li><a href="applications.html"><i class="fas fa-paper-plane"></i> My Applications</a></li>
+                <li><a href="interviews.html"><i class="fas fa-calendar-alt"></i> Interviews</a></li>
+                <li><a href="placement.html" class="active"><i class="fas fa-trophy"></i> Placement Status</a></li>
+
+                <li class="menu-section-label">Account</li>
+                <li><a href="notifications.html"><i class="fas fa-bell"></i> Notifications</a></li>
+                <li><a href="javascript:void(0)" onclick="handleLogout()"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+            </ul>
+
+            <div class="sidebar-footer">
+                <div class="user-brief">
+                    <div class="user-avatar"><i class="fas fa-user"></i></div>
+                    <div class="user-meta">
+                        <div class="user-name student-display-name">Student User</div>
+                        <div class="user-email student-display-email">student@campus.edu</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="topbar">
+                <div class="page-title">
+                    <h1>Placement Confirmation & Offers</h1>
+                    <p>Official record of campus recruitment selections and compensation packages.</p>
+                </div>
+                <div class="topbar-actions">
+                    <a href="notifications.html" class="notif-bell-btn">
+                        <i class="fas fa-bell"></i>
+                        <span id="notif-badge-count" class="notif-badge" style="display: none;">0</span>
+                    </a>
+                </div>
+            </header>
+
+            <div class="content-body" style="max-width: 900px;">
+                <div id="placement-status-card">
+                    <div class="empty-state"><i class="fas fa-spinner fa-spin"></i><p>Checking placement database...</p></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="../js/main.js"></script>
+    <script src="../js/student.js"></script>
+    <script>
+        async function loadPlacementDetails() {
+            const container = document.getElementById('placement-status-card');
+            try {
+                const res = await apiRequest('student/applications.php');
+                const apps = res.applications || [];
+                const placed = apps.filter(a => a.status === 'SELECTED' && a.placement_id);
+
+                if (placed.length === 0) {
+                    container.innerHTML = `
+                        <div class="card" style="padding: 3rem; text-align: center;">
+                            <div style="width: 70px; height: 70px; border-radius: 50%; background: #fef3c7; color: #b45309; display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 1.5rem;">
+                                <i class="fas fa-hourglass-half"></i>
+                            </div>
+                            <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;">Placement in Progress</h2>
+                            <p style="color: var(--text-secondary); max-width: 500px; margin: 0 auto 2rem;">
+                                You have not confirmed a final selection offer yet. Continue applying to AI-recommended jobs and preparing for upcoming interview assessments.
+                            </p>
+                            <a href="recommendations.html" class="btn btn-primary"><i class="fas fa-magic"></i> Explore Recommendations</a>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = placed.map(p => `
+                    <div class="card" style="border: 2px solid #86efac; background: #f0fdf4; margin-bottom: 2rem; box-shadow: var(--shadow-md);">
+                        <div class="card-body" style="padding: 2.5rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem;">
+                                <div>
+                                    <span class="badge badge-success" style="font-size: 0.85rem; padding: 0.4rem 0.85rem; margin-bottom: 0.5rem;">
+                                        <i class="fas fa-check-circle"></i> Official Placement Confirmed
+                                    </span>
+                                    <h2 style="font-size: 2rem; font-weight: 800; color: #166534;">${p.company_name}</h2>
+                                    <div style="font-size: 1.1rem; color: #15803d; font-weight: 600;">Position: ${p.job_title}</div>
+                                </div>
+                                <div style="text-align: right;">
+                                    <div style="font-size: 0.85rem; color: #166534; text-transform: uppercase; font-weight: 700;">Compensation Package</div>
+                                    <div style="font-size: 2.25rem; font-weight: 800; color: #15803d;">₹${p.package_lpa} LPA</div>
+                                </div>
+                            </div>
+
+                            <div style="border-top: 1px solid #bbf7d0; padding-top: 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+                                <div style="font-size: 0.9rem; color: #166534;">
+                                    <i class="fas fa-calendar-check"></i> Accepted On: <strong>${formatDate(p.accepted_at)}</strong>
+                                </div>
+                                <div>
+                                    <a href="../${p.offer_letter_path || 'backend/api/offer_letter.php?placement_id=' + p.placement_id}" target="_blank" class="btn btn-success">
+                                        <i class="fas fa-file-download"></i> Download Offer Letter (PDF)
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+
+            } catch (err) {
+                container.innerHTML = `<div class="empty-state"><p>${err.message}</p></div>`;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', async () => {
+            const authed = await initStudentView();
+            if (!authed) return;
+            loadPlacementDetails();
+        });
+    </script>
+</body>
+</html>
