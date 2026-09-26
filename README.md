@@ -178,7 +178,6 @@ The project uses clean, modular web standards without heavy frameworks:
 | **Database** | MySQL / MariaDB (via PDO) | Normalized 3NF schema, InnoDB engine, prepared statements, multi-port support (3306/3308) |
 | **SQL Architecture** | 19 Tables, 6 Views, 5 Procedures, 3 Functions, 5 Triggers | ACID transactions (`START TRANSACTION` / `COMMIT` / `ROLLBACK`), auto-indexing, constraint enforcement |
 | **Authentication** | PHP Session + HMAC-SHA256 Bearer Tokens | Dual-auth support (cookie-based session + Bearer token header for cross-port support) |
-| **Data Modeling (AI)** | Python 3.9+ (pandas, scikit-learn) | Standalone scripts in `ai/` for job matching prototypes and placement prediction datasets |
 
 ---
 
@@ -286,11 +285,8 @@ CareerBridge/
 ├── assets/                         # STATIC ASSETS
 │   └── uploads/                    # Directory for Resumes & Offer Letters
 │
-└── ai/                             # PYTHON DATA SCIENCE UTILITIES (OPTIONAL)
-    ├── requirements.txt            # Python Dependencies (pandas, scikit-learn)
-    ├── job_matching.py             # TF-IDF Matching Prototype
-    ├── placement_prediction.py     # Student Placement Prediction Model
-    └── train_model.py              # Model Training Script
+└── documentation/                  # PROJECT DOCUMENTATION
+    └── ER-Diagram.png              # Entity-Relationship (ER) Schema Diagram
 ```
 
 ---
@@ -303,7 +299,6 @@ Follow these steps to set up and run CareerBridge on your local machine:
 - **PHP**: Version 8.0 or higher
 - **MySQL / MariaDB**: Version 8.0+ or MariaDB 10.4+ (available via [XAMPP](https://www.apachefriends.org/))
 - **Web Browser**: Google Chrome, Mozilla Firefox, or Microsoft Edge
-- *(Optional)* **Python 3.9+**: Only required if running the standalone ML models in `ai/`
 
 ---
 
